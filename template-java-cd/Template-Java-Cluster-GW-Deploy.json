@@ -1,0 +1,2156 @@
+{
+   "source":2,
+   "revision":1,
+   "description":null,
+   "createdBy":{},
+   "modifiedOn":"",
+   "isDeleted":false,
+   "isDisabled":false,
+   "variables":{
+      "artifact.configMapName":{
+         "value":"$(artifact.name)-config"
+      },
+      "artifact.contextPath":{
+         "value":"API_PATH"
+      },
+      "artifact.nameSpace":{
+         "value":"WORKLOAD_NAMESPACE"
+      },
+      "artifact.nameSpaceGateway":{
+         "value":"GW_NAMESPACE"
+      },
+      "artifact.pathLiveness":{
+         "value":"$(artifact.contextPath)HEALTH_CHECK_LIVENESS_PATH"
+      },
+      "artifact.pathReadiness":{
+         "value":"$(artifact.contextPath)HEALTH_CHECK_READINES_PATH"
+      },
+      "artifact.portService":{
+         "value":"80"
+      },
+      "artifact.replicas":{
+         "value":"none"
+      },
+      "artifact.secret":{
+         "value":"environment.yml"
+      },
+      "artifact.timeoutLiveness":{
+         "value":"10"
+      },
+      "artifact.timeoutReadiness":{
+         "value":"2"
+      },
+      "branchConfig":{
+         "value":"master"
+      },
+      "hpaMaxReplicas":{
+         "value":"4"
+      },
+      "k8ManifestPath":{
+         "value":"frameworks/k8Templates/k8s-manifest-template-gke-npv.yaml"
+      },
+      "port":{
+         "value":"8080"
+      },
+      "req_cpu":{
+         "value":"300m"
+      },
+      "req_memory":{
+         "value":"900Mi"
+      },
+      "sourcesArtifacts":{
+         "value":"_CI_NAME"
+      },
+      "VolMountPath":{
+         "value":"$(artifact.pathConfigLocation)$(artifact.fileProperties)"
+      }
+   },
+   "variableGroups":[],
+   "environments":[
+      {
+         "id":null,
+         "name":"Develop",
+         "rank":1,
+         "owner":{},
+         "variables":{
+            "artifact.hostNameK8":{
+               "value":"DNS_DEV"
+            },
+            "branchProperties":{
+               "value":"develop"
+            }
+         },
+         "variableGroups":[
+            
+         ],
+         "preDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":1
+            }
+         },
+         "deployStep":{
+            "id":null
+         },
+         "postDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":2
+            }
+         },
+         "deployPhases":[
+            {
+               "deploymentInput":{
+                  "parallelExecution":{
+                     "parallelExecutionType":0
+                  },
+                  "skipArtifactsDownload":false,
+                  "artifactsDownloadInput":{
+                     "downloadInputs":[
+                        
+                     ]
+                  },
+                  "demands":[
+                     
+                  ],
+                  "enableAccessToken":false,
+                  "timeoutInMinutes":0,
+                  "jobCancelTimeoutInMinutes":1,
+                  "condition":"succeeded()",
+                  "overrideInputs":{
+                     
+                  }
+               },
+               "rank":1,
+               "phaseType":1,
+               "name":"Agent job",
+               "refName":null,
+               "workflowTasks":[
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"ffd54dce-ce4f-4080-bdda-a110f334feff",
+                     "version":"1.*",
+                     "name":"JSON to Variable",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "jsonFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "shouldPrefixVariables":"true",
+                        "variablePrefix":"artifact"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"cat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json\n\necho \" \"\necho \" =========== \"\necho \" \"\n\nrm -rf ./target\nrm -rf temp\nmkdir ./target\n\npwd\n\nrm -rf $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\nmkdir $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n\ngit clone --single-branch -b $(branchProperties) $(path_projectsProperties) --depth 1 temp\n\nls -lt $(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)\n\nif [[ -n \"$(artifact.fileProperties)\" && \"$(artifact.fileProperties)\" != \"none\" ]]; then\n    FILE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileProperties)\"\n    echo $FILE_PROPERTIES;\n\n    if [[ -f ${FILE_PROPERTIES} ]]; then\n        cp $FILE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.fileHibernateProperties)\" && \"$(artifact.fileHibernateProperties)\" != \"none\" ]]; then\n    FILE_HIBERNATE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileHibernateProperties)\"\n    echo $FILE_HIBERNATE_PROPERTIES;\n        \n    if [[ -f ${FILE_HIBERNATE_PROPERTIES} ]]; then\n        cp $FILE_HIBERNATE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_HIBERNATE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.secret)\" && \"$(artifact.secret)\" != \"none\" ]]; then\n    FILE_SECRET=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.secret)\"\n    echo $FILE_SECRET;\n \n  if [[ -f ${FILE_SECRET} ]]; then\n        cp $FILE_SECRET $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_SECRET}\"\n        exit 1\n    fi\nfi\n\nrm -rf temp\necho \" \"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file k8-manifest",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"rm -rf ./temp\n\ngit clone --single-branch -b $(branchConfig) $(path_pipelineConfigYml) --depth 1 temp\nls -lt temp\n\nK8_MANIFEST=\"$(System.ArtifactsDirectory)/temp/$(k8ManifestPath)\"\necho $K8_MANIFEST;\n\nif [ -f $K8_MANIFEST ]; then\n   cp $K8_MANIFEST $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\nelse\n    echo \"##vso[task.logissue type=warning] File K8 manifest not found: ${K8_MANIFEST}\"\n    exit 1\nfi\n\necho \"\"\necho \"folder drop list\"\necho \"\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/\n\necho \"\"\necho \"folder sourceAlias list\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n\n\n\nsed -i -E '/^[[:space:]]*imagePullPolicy: Always/{N;s|^([[:space:]]*imagePullPolicy: Always\\r\\n[[:space:]]+name: #[{]artifact\\.name[}]#)|\\1\\n        envFrom:\\n            - secretRef:\\n                name: #{artifact.name}#|}' \"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\"\n\n\n\ncat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"get replicas",
+                     "refName":"replica",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"",
+                        "command":"get",
+                        "useConfigurationFile":"false",
+                        "configurationType":"configuration",
+                        "configuration":"",
+                        "inline":"",
+                        "arguments":"deployment $(artifact.name) -o=jsonpath='{.spec.replicas}'  --ignore-not-found=true",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"set replicas",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"currentReplicas=$(replica.KubectlOutput)\n \nif [[ -z \"$currentReplicas\" || \"$currentReplicas\" -eq 0 ]]; then\n   echo \"$(artifact.name) does not have replicas, default value 1 is assigned\"\n   currentReplicas=1\nfi\n \necho \"##vso[task.setvariable variable=artifact.replicas;]${currentReplicas}\"\necho \"number of replicas: $currentReplicas\"",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"a8515ec8-7254-4ffd-912c-86772e2b5962",
+                     "version":"5.*",
+                     "name":"Replace tokens files properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "rootDirectory":"",
+                        "targetFiles":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "encoding":"auto",
+                        "tokenPattern":"default",
+                        "tokenPrefix":"",
+                        "tokenSuffix":"",
+                        "writeBOM":"true",
+                        "escapeType":"auto",
+                        "escapeChar":"",
+                        "charsToEscape":"",
+                        "verbosity":"normal",
+                        "actionOnMissing":"warn",
+                        "keepToken":"true",
+                        "actionOnNoFiles":"continue",
+                        "enableTransforms":"false",
+                        "transformPrefix":"(",
+                        "transformSuffix":")",
+                        "variableFiles":"",
+                        "inlineVariables":"",
+                        "variableSeparator":".",
+                        "useAdditionalVariablesOnly":"false",
+                        "enableRecursion":"false",
+                        "useLegacyPattern":"true",
+                        "useLegacyEmptyFeature":"true",
+                        "useDefaultValue":"false",
+                        "emptyValue":"(empty)",
+                        "defaultValue":"",
+                        "enableTelemetry":"true"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"Command Line Script",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"echo Write your commands here\n\necho Hello world\n",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl secret",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl apply",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"$(artifact.configMapName)",
+                        "forceUpdateConfigMap":"true",
+                        "useConfigMapFile":"true",
+                        "configMapFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"b7e8b412-0437-4065-9371-edc5881de25b",
+                     "version":"1.*",
+                     "name":"Delete files from ",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "SourceFolder":"",
+                        "Contents":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "RemoveSourceFolder":"true",
+                        "RemoveDotFiles":"false"
+                     }
+                  }
+               ]
+            }
+         ],
+         "environmentOptions":{
+            "emailNotificationType":"OnlyOnFailure",
+            "emailRecipients":"release.environment.owner;release.creator",
+            "skipArtifactsDownload":false,
+            "timeoutInMinutes":0,
+            "enableAccessToken":false,
+            "publishDeploymentStatus":true,
+            "badgeEnabled":false,
+            "autoLinkWorkItems":false,
+            "pullRequestDeploymentEnabled":false
+         },
+         "demands":[
+            
+         ],
+         "conditions":[
+            {
+               "name":"ReleaseStarted",
+               "conditionType":1,
+               "value":"",
+               "result":null
+            }
+         ],
+         "executionPolicy":{
+            "concurrencyCount":1,
+            "queueDepthCount":0
+         },
+         "schedules":[
+            
+         ],
+         "currentRelease":{
+            "id":null,
+            "url":"",
+            "_links":{
+               
+            }
+         },
+         "retentionPolicy":{
+            "daysToKeep":30,
+            "releasesToKeep":3,
+            "retainBuild":true
+         },
+         "processParameters":{
+            
+         },
+         "properties":{
+            "BoardsEnvironmentType":{
+               "$type":"System.String",
+               "$value":"unmapped"
+            },
+            "LinkBoardsWorkItems":{
+               "$type":"System.String",
+               "$value":"False"
+            }
+         },
+         "preDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "postDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "environmentTriggers":[
+            
+         ],
+         "badgeUrl":""
+      },
+      {
+         "id":null,
+         "name":"QA",
+         "rank":2,
+         "owner":{},
+         "variables":{
+            "artifact.hostNameK8":{
+               "value":"DNS_QA"
+            },
+            "branchProperties":{
+               "value":"QA"
+            }
+         },
+         "variableGroups":[
+            
+         ],
+         "preDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":1
+            }
+         },
+         "deployStep":{
+            "id":null
+         },
+         "postDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":2
+            }
+         },
+         "deployPhases":[
+            {
+               "deploymentInput":{
+                  "parallelExecution":{
+                     "parallelExecutionType":0
+                  },
+                  "skipArtifactsDownload":false,
+                  "artifactsDownloadInput":{
+                     "downloadInputs":[
+                        
+                     ]
+                  },
+                  "demands":[
+                     
+                  ],
+                  "enableAccessToken":false,
+                  "timeoutInMinutes":0,
+                  "jobCancelTimeoutInMinutes":1,
+                  "condition":"succeeded()",
+                  "overrideInputs":{
+                     
+                  }
+               },
+               "rank":1,
+               "phaseType":1,
+               "name":"Agent job",
+               "refName":null,
+               "workflowTasks":[
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"ffd54dce-ce4f-4080-bdda-a110f334feff",
+                     "version":"1.*",
+                     "name":"JSON to Variable",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "jsonFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "shouldPrefixVariables":"true",
+                        "variablePrefix":"artifact"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"cat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json\n\necho \" \"\necho \" =========== \"\necho \" \"\n\nrm -rf ./target\nrm -rf temp\nmkdir ./target\n\npwd\n\nrm -rf $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\nmkdir $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n\ngit clone --single-branch -b $(branchProperties) $(path_projectsProperties) --depth 1 temp\n\nls -lt $(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)\n\nif [[ -n \"$(artifact.fileProperties)\" && \"$(artifact.fileProperties)\" != \"none\" ]]; then\n    FILE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileProperties)\"\n    echo $FILE_PROPERTIES;\n\n    if [[ -f ${FILE_PROPERTIES} ]]; then\n        cp $FILE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.fileHibernateProperties)\" && \"$(artifact.fileHibernateProperties)\" != \"none\" ]]; then\n    FILE_HIBERNATE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileHibernateProperties)\"\n    echo $FILE_HIBERNATE_PROPERTIES;\n        \n    if [[ -f ${FILE_HIBERNATE_PROPERTIES} ]]; then\n        cp $FILE_HIBERNATE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_HIBERNATE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.secret)\" && \"$(artifact.secret)\" != \"none\" ]]; then\n    FILE_SECRET=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.secret)\"\n    echo $FILE_SECRET;\n \n  if [[ -f ${FILE_SECRET} ]]; then\n        cp $FILE_SECRET $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_SECRET}\"\n        exit 1\n    fi\nfi\n\nrm -rf temp\necho \" \"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file k8-manifest",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"rm -rf ./temp\n\ngit clone --single-branch -b $(branchConfig) $(path_pipelineConfigYml) --depth 1 temp\nls -lt temp\n\nK8_MANIFEST=\"$(System.ArtifactsDirectory)/temp/$(k8ManifestPath)\"\necho $K8_MANIFEST;\n\nif [ -f $K8_MANIFEST ]; then\n   cp $K8_MANIFEST $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\nelse\n    echo \"##vso[task.logissue type=warning] File K8 manifest not found: ${K8_MANIFEST}\"\n    exit 1\nfi\n\necho \"\"\necho \"folder drop list\"\necho \"\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/\n\necho \"\"\necho \"folder sourceAlias list\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n\n\n\nsed -i -E '/^[[:space:]]*imagePullPolicy: Always/{N;s|^([[:space:]]*imagePullPolicy: Always\\r\\n[[:space:]]+name: #[{]artifact\\.name[}]#)|\\1\\n        envFrom:\\n            - secretRef:\\n                name: #{artifact.name}#|}' \"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\"\n\n\n\ncat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"get replicas",
+                     "refName":"replica",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"",
+                        "command":"get",
+                        "useConfigurationFile":"false",
+                        "configurationType":"configuration",
+                        "configuration":"",
+                        "inline":"",
+                        "arguments":"deployment $(artifact.name) -o=jsonpath='{.spec.replicas}'  --ignore-not-found=true",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"set replicas",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"currentReplicas=$(replica.KubectlOutput)\n \nif [[ -z \"$currentReplicas\" || \"$currentReplicas\" -eq 0 ]]; then\n   echo \"$(artifact.name) does not have replicas, default value 1 is assigned\"\n   currentReplicas=1\nfi\n \necho \"##vso[task.setvariable variable=artifact.replicas;]${currentReplicas}\"\necho \"number of replicas: $currentReplicas\"",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"a8515ec8-7254-4ffd-912c-86772e2b5962",
+                     "version":"5.*",
+                     "name":"Replace tokens files properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "rootDirectory":"",
+                        "targetFiles":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "encoding":"auto",
+                        "tokenPattern":"default",
+                        "tokenPrefix":"",
+                        "tokenSuffix":"",
+                        "writeBOM":"true",
+                        "escapeType":"auto",
+                        "escapeChar":"",
+                        "charsToEscape":"",
+                        "verbosity":"normal",
+                        "actionOnMissing":"warn",
+                        "keepToken":"true",
+                        "actionOnNoFiles":"continue",
+                        "enableTransforms":"false",
+                        "transformPrefix":"(",
+                        "transformSuffix":")",
+                        "variableFiles":"",
+                        "inlineVariables":"",
+                        "variableSeparator":".",
+                        "useAdditionalVariablesOnly":"false",
+                        "enableRecursion":"false",
+                        "useLegacyPattern":"true",
+                        "useLegacyEmptyFeature":"true",
+                        "useDefaultValue":"false",
+                        "emptyValue":"(empty)",
+                        "defaultValue":"",
+                        "enableTelemetry":"true"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"Command Line Script",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"echo Write your commands here\n\necho Hello world\n",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl secret",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl apply",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"$(artifact.configMapName)",
+                        "forceUpdateConfigMap":"true",
+                        "useConfigMapFile":"true",
+                        "configMapFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"b7e8b412-0437-4065-9371-edc5881de25b",
+                     "version":"1.*",
+                     "name":"Delete files from ",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "SourceFolder":"",
+                        "Contents":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "RemoveSourceFolder":"true",
+                        "RemoveDotFiles":"false"
+                     }
+                  }
+               ]
+            }
+         ],
+         "environmentOptions":{
+            "emailNotificationType":"OnlyOnFailure",
+            "emailRecipients":"release.environment.owner;release.creator",
+            "skipArtifactsDownload":false,
+            "timeoutInMinutes":0,
+            "enableAccessToken":false,
+            "publishDeploymentStatus":true,
+            "badgeEnabled":false,
+            "autoLinkWorkItems":false,
+            "pullRequestDeploymentEnabled":false
+         },
+         "demands":[
+            
+         ],
+         "conditions":[
+            {
+               "name":"ReleaseStarted",
+               "conditionType":1,
+               "value":"",
+               "result":null
+            }
+         ],
+         "executionPolicy":{
+            "concurrencyCount":1,
+            "queueDepthCount":0
+         },
+         "schedules":[
+            
+         ],
+         "currentRelease":{
+            "id":null,
+            "url":"",
+            "_links":{
+               
+            }
+         },
+         "retentionPolicy":{
+            "daysToKeep":30,
+            "releasesToKeep":3,
+            "retainBuild":true
+         },
+         "processParameters":{
+            
+         },
+         "properties":{
+            "BoardsEnvironmentType":{
+               "$type":"System.String",
+               "$value":"unmapped"
+            },
+            "LinkBoardsWorkItems":{
+               "$type":"System.String",
+               "$value":"False"
+            }
+         },
+         "preDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "postDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "environmentTriggers":[
+            
+         ],
+         "badgeUrl":""
+      },
+      {
+         "id":null,
+         "name":"Staging",
+         "rank":3,
+         "owner":{},
+         "variables":{
+            "artifact.hostNameK8":{
+               "value":"DNS_STAGING"
+            },
+            "branchProperties":{
+               "value":"release"
+            }
+         },
+         "variableGroups":[
+            
+         ],
+         "preDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":1
+            }
+         },
+         "deployStep":{
+            "id":null
+         },
+         "postDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":2
+            }
+         },
+         "deployPhases":[
+            {
+               "deploymentInput":{
+                  "parallelExecution":{
+                     "parallelExecutionType":0
+                  },
+                  "skipArtifactsDownload":false,
+                  "artifactsDownloadInput":{
+                     "downloadInputs":[
+                        
+                     ]
+                  },
+                  "demands":[
+                     
+                  ],
+                  "enableAccessToken":false,
+                  "timeoutInMinutes":0,
+                  "jobCancelTimeoutInMinutes":1,
+                  "condition":"succeeded()",
+                  "overrideInputs":{
+                     
+                  }
+               },
+               "rank":1,
+               "phaseType":1,
+               "name":"Agent job",
+               "refName":null,
+               "workflowTasks":[
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"ffd54dce-ce4f-4080-bdda-a110f334feff",
+                     "version":"1.*",
+                     "name":"JSON to Variable",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "jsonFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "shouldPrefixVariables":"true",
+                        "variablePrefix":"artifact"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"cat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json\n\necho \" \"\necho \" =========== \"\necho \" \"\n\nrm -rf ./target\nrm -rf temp\nmkdir ./target\n\npwd\n\nrm -rf $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\nmkdir $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n\ngit clone --single-branch -b $(branchProperties) $(path_projectsProperties) --depth 1 temp\n\nls -lt $(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)\n\nif [[ -n \"$(artifact.fileProperties)\" && \"$(artifact.fileProperties)\" != \"none\" ]]; then\n    FILE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileProperties)\"\n    echo $FILE_PROPERTIES;\n\n    if [[ -f ${FILE_PROPERTIES} ]]; then\n        cp $FILE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.fileHibernateProperties)\" && \"$(artifact.fileHibernateProperties)\" != \"none\" ]]; then\n    FILE_HIBERNATE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileHibernateProperties)\"\n    echo $FILE_HIBERNATE_PROPERTIES;\n        \n    if [[ -f ${FILE_HIBERNATE_PROPERTIES} ]]; then\n        cp $FILE_HIBERNATE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_HIBERNATE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.secret)\" && \"$(artifact.secret)\" != \"none\" ]]; then\n    FILE_SECRET=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.secret)\"\n    echo $FILE_SECRET;\n \n  if [[ -f ${FILE_SECRET} ]]; then\n        cp $FILE_SECRET $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_SECRET}\"\n        exit 1\n    fi\nfi\n\nrm -rf temp\necho \" \"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file k8-manifest",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"rm -rf ./temp\n\ngit clone --single-branch -b $(branchConfig) $(path_pipelineConfigYml) --depth 1 temp\nls -lt temp\n\nK8_MANIFEST=\"$(System.ArtifactsDirectory)/temp/$(k8ManifestPath)\"\necho $K8_MANIFEST;\n\nif [ -f $K8_MANIFEST ]; then\n   cp $K8_MANIFEST $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\nelse\n    echo \"##vso[task.logissue type=warning] File K8 manifest not found: ${K8_MANIFEST}\"\n    exit 1\nfi\n\necho \"\"\necho \"folder drop list\"\necho \"\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/\n\necho \"\"\necho \"folder sourceAlias list\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n\n\n\nsed -i -E '/^[[:space:]]*imagePullPolicy: Always/{N;s|^([[:space:]]*imagePullPolicy: Always\\r\\n[[:space:]]+name: #[{]artifact\\.name[}]#)|\\1\\n        envFrom:\\n            - secretRef:\\n                name: #{artifact.name}#|}' \"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\"\n\n\n\ncat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"get replicas",
+                     "refName":"replica",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"",
+                        "command":"get",
+                        "useConfigurationFile":"false",
+                        "configurationType":"configuration",
+                        "configuration":"",
+                        "inline":"",
+                        "arguments":"deployment $(artifact.name) -o=jsonpath='{.spec.replicas}'  --ignore-not-found=true",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"set replicas",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"currentReplicas=$(replica.KubectlOutput)\n \nif [[ -z \"$currentReplicas\" || \"$currentReplicas\" -eq 0 ]]; then\n   echo \"$(artifact.name) does not have replicas, default value 1 is assigned\"\n   currentReplicas=1\nfi\n \necho \"##vso[task.setvariable variable=artifact.replicas;]${currentReplicas}\"\necho \"number of replicas: $currentReplicas\"",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"a8515ec8-7254-4ffd-912c-86772e2b5962",
+                     "version":"5.*",
+                     "name":"Replace tokens files properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "rootDirectory":"",
+                        "targetFiles":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "encoding":"auto",
+                        "tokenPattern":"default",
+                        "tokenPrefix":"",
+                        "tokenSuffix":"",
+                        "writeBOM":"true",
+                        "escapeType":"auto",
+                        "escapeChar":"",
+                        "charsToEscape":"",
+                        "verbosity":"normal",
+                        "actionOnMissing":"warn",
+                        "keepToken":"true",
+                        "actionOnNoFiles":"continue",
+                        "enableTransforms":"false",
+                        "transformPrefix":"(",
+                        "transformSuffix":")",
+                        "variableFiles":"",
+                        "inlineVariables":"",
+                        "variableSeparator":".",
+                        "useAdditionalVariablesOnly":"false",
+                        "enableRecursion":"false",
+                        "useLegacyPattern":"true",
+                        "useLegacyEmptyFeature":"true",
+                        "useDefaultValue":"false",
+                        "emptyValue":"(empty)",
+                        "defaultValue":"",
+                        "enableTelemetry":"true"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"Command Line Script",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"echo Write your commands here\n\necho Hello world\n",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl secret",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl apply",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"$(artifact.configMapName)",
+                        "forceUpdateConfigMap":"true",
+                        "useConfigMapFile":"true",
+                        "configMapFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"b7e8b412-0437-4065-9371-edc5881de25b",
+                     "version":"1.*",
+                     "name":"Delete files from ",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "SourceFolder":"",
+                        "Contents":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "RemoveSourceFolder":"true",
+                        "RemoveDotFiles":"false"
+                     }
+                  }
+               ]
+            }
+         ],
+         "environmentOptions":{
+            "emailNotificationType":"OnlyOnFailure",
+            "emailRecipients":"release.environment.owner;release.creator",
+            "skipArtifactsDownload":false,
+            "timeoutInMinutes":0,
+            "enableAccessToken":false,
+            "publishDeploymentStatus":true,
+            "badgeEnabled":false,
+            "autoLinkWorkItems":false,
+            "pullRequestDeploymentEnabled":false
+         },
+         "demands":[
+            
+         ],
+         "conditions":[
+            {
+               "name":"ReleaseStarted",
+               "conditionType":1,
+               "value":"",
+               "result":null
+            }
+         ],
+         "executionPolicy":{
+            "concurrencyCount":1,
+            "queueDepthCount":0
+         },
+         "schedules":[
+            
+         ],
+         "currentRelease":{
+            "id":null,
+            "url":"",
+            "_links":{
+               
+            }
+         },
+         "retentionPolicy":{
+            "daysToKeep":30,
+            "releasesToKeep":3,
+            "retainBuild":true
+         },
+         "processParameters":{
+            
+         },
+         "properties":{
+            "BoardsEnvironmentType":{
+               "$type":"System.String",
+               "$value":"testing"
+            },
+            "LinkBoardsWorkItems":{
+               "$type":"System.String",
+               "$value":"False"
+            }
+         },
+         "preDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "postDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "environmentTriggers":[
+            
+         ],
+         "badgeUrl":""
+      },
+      {
+         "id":null,
+         "name":"Produccion",
+         "rank":4,
+         "owner":{},
+         "variables":{
+            "artifact.hostNameK8":{
+               "value":"DNS_PRODUCCION"
+            },
+            "branchProperties":{
+               "value":"(master/main)"
+            }
+         },
+         "variableGroups":[
+            
+         ],
+         "preDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":1
+            }
+         },
+         "deployStep":{
+            "id":null
+         },
+         "postDeployApprovals":{
+            "approvals":[
+               {
+                  "rank":1,
+                  "isAutomated":true,
+                  "isNotificationOn":false,
+                  "id":null
+               }
+            ],
+            "approvalOptions":{
+               "requiredApproverCount":null,
+               "releaseCreatorCanBeApprover":false,
+               "autoTriggeredAndPreviousEnvironmentApprovedCanBeSkipped":false,
+               "enforceIdentityRevalidation":false,
+               "timeoutInMinutes":0,
+               "executionOrder":2
+            }
+         },
+         "deployPhases":[
+            {
+               "deploymentInput":{
+                  "parallelExecution":{
+                     "parallelExecutionType":0
+                  },
+                  "skipArtifactsDownload":false,
+                  "artifactsDownloadInput":{
+                     "downloadInputs":[
+                        
+                     ]
+                  },
+                  "demands":[
+                     
+                  ],
+                  "enableAccessToken":false,
+                  "timeoutInMinutes":0,
+                  "jobCancelTimeoutInMinutes":1,
+                  "condition":"succeeded()",
+                  "overrideInputs":{
+                     
+                  }
+               },
+               "rank":1,
+               "phaseType":1,
+               "name":"Agent job",
+               "refName":null,
+               "workflowTasks":[
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"ffd54dce-ce4f-4080-bdda-a110f334feff",
+                     "version":"1.*",
+                     "name":"JSON to Variable",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "jsonFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "shouldPrefixVariables":"true",
+                        "variablePrefix":"artifact"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"cat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json\n\necho \" \"\necho \" =========== \"\necho \" \"\n\nrm -rf ./target\nrm -rf temp\nmkdir ./target\n\npwd\n\nrm -rf $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\nmkdir $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n\ngit clone --single-branch -b $(branchProperties) $(path_projectsProperties) --depth 1 temp\n\nls -lt $(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)\n\nif [[ -n \"$(artifact.fileProperties)\" && \"$(artifact.fileProperties)\" != \"none\" ]]; then\n    FILE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileProperties)\"\n    echo $FILE_PROPERTIES;\n\n    if [[ -f ${FILE_PROPERTIES} ]]; then\n        cp $FILE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.fileHibernateProperties)\" && \"$(artifact.fileHibernateProperties)\" != \"none\" ]]; then\n    FILE_HIBERNATE_PROPERTIES=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.fileHibernateProperties)\"\n    echo $FILE_HIBERNATE_PROPERTIES;\n        \n    if [[ -f ${FILE_HIBERNATE_PROPERTIES} ]]; then\n        cp $FILE_HIBERNATE_PROPERTIES $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_HIBERNATE_PROPERTIES}\"\n        exit 1\n    fi\nfi\n\nif [[ -n \"$(artifact.secret)\" && \"$(artifact.secret)\" != \"none\" ]]; then\n    FILE_SECRET=\"$(System.ArtifactsDirectory)/temp/$(artifact.pathProperties)/$(artifact.secret)\"\n    echo $FILE_SECRET;\n \n  if [[ -f ${FILE_SECRET} ]]; then\n        cp $FILE_SECRET $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n    else\n        echo \"##vso[task.logissue type=error]File properties not found: ${FILE_SECRET}\"\n        exit 1\n    fi\nfi\n\nrm -rf temp\necho \" \"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"get file k8-manifest",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"rm -rf ./temp\n\ngit clone --single-branch -b $(branchConfig) $(path_pipelineConfigYml) --depth 1 temp\nls -lt temp\n\nK8_MANIFEST=\"$(System.ArtifactsDirectory)/temp/$(k8ManifestPath)\"\necho $K8_MANIFEST;\n\nif [ -f $K8_MANIFEST ]; then\n   cp $K8_MANIFEST $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\nelse\n    echo \"##vso[task.logissue type=warning] File K8 manifest not found: ${K8_MANIFEST}\"\n    exit 1\nfi\n\necho \"\"\necho \"folder drop list\"\necho \"\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/\n\necho \"\"\necho \"folder sourceAlias list\"\nls -lt $(System.ArtifactsDirectory)/$(sourcesArtifacts)\n\n\n\nsed -i -E '/^[[:space:]]*imagePullPolicy: Always/{N;s|^([[:space:]]*imagePullPolicy: Always\\r\\n[[:space:]]+name: #[{]artifact\\.name[}]#)|\\1\\n        envFrom:\\n            - secretRef:\\n                name: #{artifact.name}#|}' \"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\"\n\n\n\ncat $(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"get replicas",
+                     "refName":"replica",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"",
+                        "command":"get",
+                        "useConfigurationFile":"false",
+                        "configurationType":"configuration",
+                        "configuration":"",
+                        "inline":"",
+                        "arguments":"deployment $(artifact.name) -o=jsonpath='{.spec.replicas}'  --ignore-not-found=true",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"set replicas",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"currentReplicas=$(replica.KubectlOutput)\n \nif [[ -z \"$currentReplicas\" || \"$currentReplicas\" -eq 0 ]]; then\n   echo \"$(artifact.name) does not have replicas, default value 1 is assigned\"\n   currentReplicas=1\nfi\n \necho \"##vso[task.setvariable variable=artifact.replicas;]${currentReplicas}\"\necho \"number of replicas: $currentReplicas\"",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"a8515ec8-7254-4ffd-912c-86772e2b5962",
+                     "version":"5.*",
+                     "name":"Replace tokens files properties",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "rootDirectory":"",
+                        "targetFiles":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(artifact.fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "encoding":"auto",
+                        "tokenPattern":"default",
+                        "tokenPrefix":"",
+                        "tokenSuffix":"",
+                        "writeBOM":"true",
+                        "escapeType":"auto",
+                        "escapeChar":"",
+                        "charsToEscape":"",
+                        "verbosity":"normal",
+                        "actionOnMissing":"warn",
+                        "keepToken":"true",
+                        "actionOnNoFiles":"continue",
+                        "enableTransforms":"false",
+                        "transformPrefix":"(",
+                        "transformSuffix":")",
+                        "variableFiles":"",
+                        "inlineVariables":"",
+                        "variableSeparator":".",
+                        "useAdditionalVariablesOnly":"false",
+                        "enableRecursion":"false",
+                        "useLegacyPattern":"true",
+                        "useLegacyEmptyFeature":"true",
+                        "useDefaultValue":"false",
+                        "emptyValue":"(empty)",
+                        "defaultValue":"",
+                        "enableTelemetry":"true"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                     "version":"2.*",
+                     "name":"Command Line Script",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "script":"echo Write your commands here\n\necho Hello world\n",
+                        "workingDirectory":"",
+                        "failOnStderr":"false"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl secret",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/$(artifact.secret)",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"",
+                        "forceUpdateConfigMap":"false",
+                        "useConfigMapFile":"false",
+                        "configMapFile":"",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"cbc316a2-586f-4def-be79-488a1f503564",
+                     "version":"1.*",
+                     "name":"kubectl apply",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "connectionType":"Kubernetes Service Connection",
+                        "kubernetesServiceEndpoint":"",
+                        "azureSubscriptionEndpoint":"",
+                        "azureResourceGroup":"",
+                        "kubernetesCluster":"",
+                        "useClusterAdmin":"false",
+                        "namespace":"$(artifact.nameSpace)",
+                        "command":"apply",
+                        "useConfigurationFile":"true",
+                        "configurationType":"configuration",
+                        "configuration":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml",
+                        "inline":"",
+                        "arguments":"",
+                        "secretType":"dockerRegistry",
+                        "secretArguments":"",
+                        "containerRegistryType":"Azure Container Registry",
+                        "dockerRegistryEndpoint":"",
+                        "azureSubscriptionEndpointForSecrets":"",
+                        "azureContainerRegistry":"",
+                        "secretName":"",
+                        "forceUpdate":"true",
+                        "configMapName":"$(artifact.configMapName)",
+                        "forceUpdateConfigMap":"true",
+                        "useConfigMapFile":"true",
+                        "configMapFile":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps",
+                        "configMapArguments":"",
+                        "versionOrLocation":"version",
+                        "versionSpec":"1.13.2",
+                        "checkLatest":"false",
+                        "specifyLocation":"",
+                        "cwd":"$(System.DefaultWorkingDirectory)",
+                        "outputFormat":"json"
+                     }
+                  },
+                  {
+                     "environment":{
+                        
+                     },
+                     "taskId":"b7e8b412-0437-4065-9371-edc5881de25b",
+                     "version":"1.*",
+                     "name":"Delete files from ",
+                     "refName":"",
+                     "enabled":true,
+                     "alwaysRun":false,
+                     "continueOnError":false,
+                     "timeoutInMinutes":0,
+                     "retryCountOnTaskFailure":0,
+                     "definitionType":"task",
+                     "overrideInputs":{
+                        
+                     },
+                     "condition":"succeeded()",
+                     "inputs":{
+                        "SourceFolder":"",
+                        "Contents":"$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/configMaps/$(fileHibernateProperties)\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/k8s-manifest.yaml\n$(System.ArtifactsDirectory)/$(sourcesArtifacts)/drop/artifact-k8-template.json",
+                        "RemoveSourceFolder":"true",
+                        "RemoveDotFiles":"false"
+                     }
+                  }
+               ]
+            }
+         ],
+         "environmentOptions":{
+            "emailNotificationType":"OnlyOnFailure",
+            "emailRecipients":"release.environment.owner;release.creator",
+            "skipArtifactsDownload":false,
+            "timeoutInMinutes":0,
+            "enableAccessToken":false,
+            "publishDeploymentStatus":true,
+            "badgeEnabled":false,
+            "autoLinkWorkItems":false,
+            "pullRequestDeploymentEnabled":false
+         },
+         "demands":[
+            
+         ],
+         "conditions":[
+            {
+               "name":"ReleaseStarted",
+               "conditionType":1,
+               "value":"",
+               "result":null
+            }
+         ],
+         "executionPolicy":{
+            "concurrencyCount":1,
+            "queueDepthCount":0
+         },
+         "schedules":[
+            
+         ],
+         "currentRelease":{
+            "id":null,
+            "url":"",
+            "_links":{
+               
+            }
+         },
+         "retentionPolicy":{
+            "daysToKeep":30,
+            "releasesToKeep":3,
+            "retainBuild":true
+         },
+         "processParameters":{
+            
+         },
+         "properties":{
+            "BoardsEnvironmentType":{
+               "$type":"System.String",
+               "$value":"unmapped"
+            },
+            "LinkBoardsWorkItems":{
+               "$type":"System.String",
+               "$value":"False"
+            }
+         },
+         "preDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "postDeploymentGates":{
+            "id":null,
+            "gatesOptions":null,
+            "gates":[
+               
+            ]
+         },
+         "environmentTriggers":[
+            
+         ],
+         "badgeUrl":""
+      }
+   ],
+   "artifacts":[
+      
+   ],
+   "triggers":[
+      
+   ],
+   "releaseNameFormat":"Release-$(rev:r)",
+   "tags":[
+      
+   ],
+   "properties":{
+      "DefinitionCreationSource":{
+         "$type":"System.String",
+         "$value":"ReleaseNew"
+      },
+      "IntegrateBoardsWorkItems":{
+         "$type":"System.String",
+         "$value":"False"
+      },
+      "IntegrateJiraWorkItems":{
+         "$type":"System.String",
+         "$value":"false"
+      }
+   },
+   "id":null,
+   "name":"Template-Java-Cluster-GW-Deploy",
+   "path":"\\",
+   "projectReference":null,
+   "url":"",
+   "_links":{
+      "self":{
+         "href":""
+      },
+      "web":{
+         "href":""
+      }
+   }
+}

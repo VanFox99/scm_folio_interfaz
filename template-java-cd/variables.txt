@@ -1,0 +1,40 @@
+Variables principales encontradas:
+
+artifact.configMapName
+artifact.nameSpace
+artifact.nameSpaceGateway
+artifact.pathBase
+artifact.pathLiveness
+artifact.pathReadiness
+artifact.replicas
+artifact.secret
+artifact.timeoutLiveness
+artifact.timeoutReadiness
+branchConfig
+hpaMaxReplicas
+k8ManifestPath
+req_cpu
+req_memory
+sourcesArtifacts
+timeoutSec
+VolMountPath
+Variables bajo el environment "develop":
+
+artifact.gatewayGKE
+artifact.hostNameK8
+artifact.portService
+branchProperties
+port
+
+Variables a remplazar inicialmente:
+
+API_PATH
+WORKLOAD_NAMESPACE
+GW_NAMESPACE
+HEALTH_CHECK_LIVENESS_PATH
+HEALTH_CHECK_READINES_PATH
+DNS_DEV
+DNS_QA
+DNS_STAGING
+DNS_PRODUCCION
+_CI-NAME

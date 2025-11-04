@@ -1,1 +1,0 @@
-# Template para construccion de pipeline CD Java despliegue tipo GKE en GW

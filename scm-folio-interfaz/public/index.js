@@ -1,14 +1,11 @@
-const prompt = require('prompt-sync')();
-const open = require('open').default;
-
 const urlBase = 'https:\/\/servicedesk.coppel.com\/incident\/create\/index\/category\/ID'
 
 const ofertas = new Map([
     //Cloud Operations
     [10820, { nombre: "SCM Control" }],
     [8384, { nombre: "(ABC) Alta\/Baja\/Modificacion de Licencias en la plataforma de Azure DevOps\/Jira\/Confluence" }],
-    [3668, { nombre: "ABC  DNS Interno o Externo" }],
     [7902, { nombre: "ABC DNS" }],
+    [3668, { nombre: "ABC  DNS Interno o Externo" }],
     [7898, { nombre: "ABC APIs" }],
     [7892, { nombre: "ABC BD (MySQL, PostgreSQL, SQL Server)" }],
     [7919, { nombre: "Upgrade BD" }],
@@ -67,9 +64,9 @@ const ofertas = new Map([
     [3399, { nombre: "Reporte de Logs" }],
     [3400, { nombre: "Respaldo de File system" }],
     [3401, { nombre: "Restauraci\u00f3n de File system" }]
-  ]);
+]);
 
-function respuestaDeteccion(respuesta){
+function respuestaDeteccion(respuesta) {
     for (let [key, value] of ofertas) {
         if (respuesta.toLowerCase().includes(value.nombre.toLowerCase())) {
             return key;
@@ -78,9 +75,24 @@ function respuestaDeteccion(respuesta){
     return null;
 };
 
+function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
+    const mensajeDiv = document.getElementById('mensaje');
+    mensajeDiv.textContent = texto;
+    mensajeDiv.style.color = esExito ? 'green' : 'red';
+
+    if (mostrarMensaje.timeoutId) {
+        clearTimeout(mostrarMensaje.timeoutId);
+    }
+
+    mostrarMensaje.timeoutId = setTimeout(() => {
+        mensajeDiv.textContent = '';
+    }, tiempo);
+}
+
 function generarUrls(ofertaMap, respuesta) {
     if (!respuesta) {
-        process.exit(1);
+        mostrarMensaje('Por favor, ingresa una oferta.');
+        return;
     }
     const resultado = Array.from(ofertaMap.entries()).find(([key, oferta]) =>
         oferta.nombre.toLowerCase().includes(respuesta.toLowerCase())
@@ -88,24 +100,24 @@ function generarUrls(ofertaMap, respuesta) {
     if (resultado) {
         const [id, oferta] = resultado;
         const urlFinal = urlBase.replace('ID', id);
-        open(urlFinal);
-        return console.log(`Oferta encontrada: ${oferta.nombre}\nURL generada: ${urlFinal}`);
+        mostrarMensaje(`Folio generado | ${oferta.nombre}`);
+        setTimeout(() => {
+            window.open(urlFinal, '_blank');
+        }, 1000);
     } else {
-        console.log("No se encontró coincidencia.");
+        mostrarMensaje("No se encontró coincidencia.", false);
     }
 }
 
-function main() {
-    console.log("Bienvenido a la interfaz SCM 1.1.0");
-    const respuesta = prompt("¿Qué necesitas hacer?: ");
-    const id = respuestaDeteccion(respuesta);
-    const urlGenerada = generarUrls(ofertas, respuesta);
-}
-
-main();
+document.getElementById('form-busqueda').addEventListener('submit', function (event) {
+    event.preventDefault();
+    const input = document.getElementById('input-oferta');
+    const respuesta = input.value;
+    generarUrls(ofertas, respuesta);
+    input.value = '';
+});
 
 //IMPORTANTE Permitir la seleccion multiple de ofertas si hay varias coincidencias, el usuario elige cual desea
-
 //Buscar la manera de implementar IA y una Base de datos SQL
 //Trabajar en la deteccion de la oferta por palabras clave y no por nombre exacto
 //Workflow para automatizar la creacion de tickets en Service Desk

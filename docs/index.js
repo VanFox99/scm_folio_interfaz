@@ -55,6 +55,7 @@ const ofertas = new Map([
     [8209, { nombre: "Gesti\u00f3n de Usuarios", tags: ["active directory", "ad", "grupos", "permisos", "altas usuarios", "listas de distribucion"] }],
 
     //Linux Operations
+    [6967, { nombre: "Alta de regla de comunicaci\u00f3n a redes protegidas", tags: ["alcance onpremise", "regla onpremise", "onpermise"] }],
     [10369, { nombre: "ABC Dns On Premise", tags: ["dns local", "bind", "named", "zona dns", "registros dns"] }],
     [12954, { nombre: "Alertas Eventos Herramientas de Monitoreo", tags: ["monitoreo", "alertas", "nagios", "zabbix", "grafana", "eventos", "notificaciones"] }],
     [3398, { nombre: "An\u00e1lisis y diagn\u00f3stico de Sistemas Operativos linux", tags: ["troubleshooting", "diagnostico", "error linux", "analisis so", "fallo sistema"] }],

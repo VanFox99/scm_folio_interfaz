@@ -147,7 +147,7 @@ function copiarNota() {
     navigator.clipboard.writeText(notas.value);
     mostrarMensaje("Nota copiada");
     notas.value = '';
-  }
+}
 
 //Evento principal
 document.getElementById('form-busqueda').addEventListener('submit', function (event) {

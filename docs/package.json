@@ -10,7 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "jspdf": "^4.0.0",
     "open": "^10.2.0",
     "prompt-sync": "^4.2.0"
   }

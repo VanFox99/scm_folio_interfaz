@@ -43,7 +43,7 @@
         <p>Esta es la interfaz principal para la gestión de actividades de operacion en el sistema Service Desk.</p>
         <div class="busqueda-notas">
             <form id="form-busqueda" action="">
-                <input id="input-oferta" class="input-busqueda" type="text" required pattern="[A-Za-z\s]{3,20}"
+                <input id="input-oferta" class="input-busqueda" type="text" required pattern="[A-Za-z\s]{2,30}"
                     maxlength="30" placeholder="¿Que necesitas hacer? ejemplo: Alcance" />
                 <div id="mensaje" class="mensaje"></div>
             </form>
@@ -52,8 +52,11 @@
             <label for="notas" style="font-size: small;">Zona de notas (copy/paste):</label><br>
             <textarea id="notas" rows="20" cols="100" placeholder="Escribe o pega tus notas..."></textarea>
             <button class="boton-menu" onclick="copiarNota()">Copy</button>
+            <button class="boton-menu" id="btn-generar-minuta">Generar Minuta</button>       
         </div>
         <script src="index.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="minutas/minutas-gen.js"></script>
     </main>
     <footer>
         <p>&copy; 2025 SCM Folio Interfaz. Todos los derechos reservados.</p>

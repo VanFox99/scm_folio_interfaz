@@ -81,7 +81,8 @@ const ofertas = new Map([
     [3397, { nombre: "Instalaci\u00f3n y configuraci\u00f3n de Sistemas Operativos linux", tags: ["instalar linux", "configurar servidor", "provisionamiento", "setup", "rhel", "ubuntu"] }],
     [3399, { nombre: "Reporte de Logs", tags: ["logs", "bitacora", "syslog", "var log", "auditoria logs", "journalctl"] }],
     [3400, { nombre: "Respaldo de File system", tags: ["backup fs", "respaldo archivos", "tar", "rsync", "copia seguridad"] }],
-    [3401, { nombre: "Restauraci\u00f3n de File system", tags: ["restore fs", "recuperar archivos", "restaurar carpeta", "backup restore"] }]
+    [3401, { nombre: "Restauraci\u00f3n de File system", tags: ["restore fs", "recuperar archivos", "restaurar carpeta", "backup restore"] }],
+    [3385, { nombre: "Respaldos de Base de Datos", tags: ["backup bd onpremise", "respaldo bd onpremise", "respaldo onpremise bd", "bd onpremise"] }]
 ]);
 
 function respuestaDeteccion(respuestaLower) {
@@ -146,7 +147,7 @@ function copiarNota() {
     navigator.clipboard.writeText(notas.value);
     mostrarMensaje("Nota copiada");
     notas.value = '';
-  }
+}
 
 //Evento principal
 document.getElementById('form-busqueda').addEventListener('submit', function (event) {

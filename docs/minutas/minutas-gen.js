@@ -51,7 +51,7 @@ function minutaNotas(callback) {
     const puntosTratados = notas.split('\n');
 
     const minuta = new MinutaTemplate(
-        "/docs/images/softtek_logo.jpeg", // Ruta del logotipo
+        "./images/softtek_logo.jpeg", // Ruta del logotipo
         titulo,
         undefined, // Fecha predeterminada
         asistentes,

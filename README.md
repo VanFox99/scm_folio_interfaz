@@ -1,3 +1,3 @@
 # DevOpsTools_SCM
 Se anade proyecto Interfaz SCM Folios
-Integracion version 1.1.1 (Zona de notas y tools principales)
+Integracion version 1.2.0 (Generacion de Minuta)

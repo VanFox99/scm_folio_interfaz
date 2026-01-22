@@ -83,17 +83,18 @@ footer {
   background-color: #fff;
   color: #34495e;
   border: none;
-  padding: 10px 15px;
+  padding: 10px 50px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  margin-top: 10px;
 }
 
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 20px;;
 }
 
 .header-title {
@@ -116,20 +117,30 @@ footer {
   gap: 30px;
 }
 
-.zona-notas {
-  margin: 0;
-  margin-left: 10px;
-  margin-right: 0;
-  margin-top: auto;
-  max-width: 600px;
-}
 
-#notas {
+.zona-notas {
   width: 100%;
   min-width: 350px;
-  max-width: 600px;
+  max-width: 1200px;
+  font-size: 15px;
+  margin-left: 10px;
+  margin-top: auto;
+}
+
+div#notas {
+  height: 500px;
   font-size: 15px;
   padding: 8px;
   border-radius: 5px;
   border: 1px solid #8dc6ff;
+  background-color: #ffffff;
+  overflow: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+#notas.placeholder {
+  color: #aaa;
+  font-style: italic;
+  text-align: left;
 }

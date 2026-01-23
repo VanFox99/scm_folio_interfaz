@@ -1,3 +1,4 @@
+// Variables y constantes globales
 const urlBase = "https:\/\/servicedesk.coppel.com\/incident\/create\/index\/category\/ID";
 const protocol = window.location.protocol + '//';
 const arrayPaginas = [
@@ -16,6 +17,7 @@ const arrayPaginas = [
     { nombre: "gestion-practicas", url: "sites.google.com/coppel.com/smo/pr%C3%A1cticas/" }
 ];
 
+// Mapa de ofertas con sus nombres y tags asociados
 const ofertas = new Map([
     //Cloud Operations
     [10820, { nombre: "SCM Control", tags: ["scm control", "scmcontrol", "scm"] }],
@@ -24,8 +26,8 @@ const ofertas = new Map([
     [3668, { nombre: "ABC  DNS Interno o Externo", tags: ["dns", "dns interno", "dns externo"] }],
     [7898, { nombre: "ABC APIs", tags: ["api", "apis", "extension"] }],
     [7892, { nombre: "ABC BD (MySQL, PostgreSQL, SQL Server)", tags: ["base de datos", "bd", "mysql", "postgresql", "sql server", "modificar bd", "modificar base de datos"] }],
-    [7919, { nombre: "Upgrade BD", tags : ["upgrade bd", "mejorar bd", "mejorar base de datos", "version bd", "version base de datos"] }],
-    [7918, { nombre: "Update BD", tags : ["actualizar bd", "actualizar base de datos" ] }],
+    [7919, { nombre: "Upgrade BD", tags: ["upgrade bd", "mejorar bd", "mejorar base de datos", "version bd", "version base de datos"] }],
+    [7918, { nombre: "Update BD", tags: ["actualizar bd", "actualizar base de datos"] }],
     [10397, { nombre: "Backup DB", tags: ["backup db", "respaldo db", "respaldo base de datos"] }],
     [10399, { nombre: "Restore Backup DB", tags: ["restore backup db", "restaurar respaldo db", "restaurar respaldo base de datos"] }],
     [7904, { nombre: "ABC Proxy DB", tags: ["proxy db", "proxy base de datos"] }],
@@ -85,18 +87,7 @@ const ofertas = new Map([
     [3385, { nombre: "Respaldos de Base de Datos", tags: ["backup bd onpremise", "respaldo bd onpremise", "respaldo onpremise bd", "bd onpremise"] }]
 ]);
 
-function respuestaDeteccion(respuestaLower) {
-    for (let [key, value] of ofertas) {
-        if (respuestaLower.includes(value.nombre.toLowerCase())) {
-            return key;
-        }
-        if (value.tags.some(tag => respuestaLower.includes(tag.toLowerCase()))) {
-            return key;
-        }
-    }
-    return null;
-};
-
+// Funciones auxiliares
 function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
     const mensajeDiv = document.getElementById('mensaje');
     mensajeDiv.textContent = texto;
@@ -110,7 +101,31 @@ function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
         mensajeDiv.textContent = '';
     }, tiempo);
 }
+function removePlaceholder(element) {
+    if (element.innerText.trim() === "Escribe o pega tus notas aquí...") {
+        element.innerText = "";
+        element.classList.remove("placeholder");
+    }
+}
+function addPlaceholder(element) {
+    if (element.innerText.trim() === "") {
+        element.innerText = "Escribe o pega tus notas aquí...";
+        element.classList.add("placeholder");
+    }
+}
 
+// Funciones principales
+function respuestaDeteccion(respuestaLower) {
+    for (let [key, value] of ofertas) {
+        if (respuestaLower.includes(value.nombre.toLowerCase())) {
+            return key;
+        }
+        if (value.tags.some(tag => respuestaLower.includes(tag.toLowerCase()))) {
+            return key;
+        }
+    }
+    return null;
+};
 function generarUrls(ofertas, respuestaLower) {
     if (!respuestaLower) {
         mostrarMensaje('Por favor, ingresa una oferta.');
@@ -131,7 +146,6 @@ function generarUrls(ofertas, respuestaLower) {
         mostrarMensaje("No se encontró coincidencia.", false);
     }
 }
-
 function redireccionMenu(nombrePagina) {
     const pagina = arrayPaginas.find(p => p.nombre === nombrePagina);
     if (pagina && pagina.url) {
@@ -140,16 +154,33 @@ function redireccionMenu(nombrePagina) {
         mostrarMensaje("Página no encontrada", false);
     }
 }
-
 function copiarNota() {
-    const notas = document.getElementById('notas');
-    notas.select();
-    navigator.clipboard.writeText(notas.value);
-    mostrarMensaje("Nota copiada");
-    notas.value = '';
+    const notasDiv = document.getElementById('notas');
+    const range = document.createRange();
+    range.selectNodeContents(notasDiv);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand('copy');
+    notasDiv.innerHTML = '';
+    mostrarMensaje('Nota copiada en portapapeles', true, 3000);
 }
 
-//Evento principal
+//Eventos
+document.addEventListener('DOMContentLoaded', () => {
+    const notasDiv = document.getElementById('notas');
+
+    // Configurar el placeholder al cargar la página
+    if (notasDiv.innerText.trim() === "") {
+        notasDiv.innerText = "Escribe o pega tus notas aquí...";
+        notasDiv.classList.add("placeholder");
+    }
+
+    // Agregar eventos de focus y blur
+    notasDiv.addEventListener('focus', () => removePlaceholder(notasDiv));
+    notasDiv.addEventListener('blur', () => addPlaceholder(notasDiv));
+});
+
 document.getElementById('form-busqueda').addEventListener('submit', function (event) {
     event.preventDefault();
     const input = document.getElementById('input-oferta');
@@ -158,4 +189,7 @@ document.getElementById('form-busqueda').addEventListener('submit', function (ev
     input.value = '';
 });
 
-//IMPORTANTE Permitir la seleccion multiple de ofertas si hay varias coincidencias, el usuario elige cual desea, mostrar listado
+document.addEventListener('DOMContentLoaded', () => {
+    const btnCopy = document.getElementById("btn-copy");
+    btnCopy.addEventListener("click", copiarNota);
+});

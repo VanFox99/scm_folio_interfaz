@@ -49,12 +49,20 @@
             </form>
         </div>
         <div class="zona-notas">
-            <label for="notas" style="font-size: small;">Zona de notas (copy/paste):</label><br>
-            <textarea id="notas" rows="20" cols="100" placeholder="Escribe o pega tus notas..."></textarea>
-            <button class="boton-menu" onclick="copiarNota()">Copy</button>
-            <button class="boton-menu" id="btn-generar-minuta">Generar Minuta</button>       
+            <label style="font-size: medium;">Zona de notas (copy/paste):</label>
+            <div id="notas" class="scrollable-container placeholder" contenteditable="true" 
+                 onfocus="removePlaceholder(this)" onblur="addPlaceholder(this)" >
+                Escribe o pega tus notas aquí...
+            </div>
+            <div class="botones">
+                <button class="boton-menu" id="btn-copy">Copy</button>
+                <button class="boton-menu" id="btn-generar-minuta">Generar Minuta</button>
+            </div>
         </div>
-        <script src="index.js"></script>
+        <script>
+
+        </script>
+        <script src="./index.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="./minutas/minutas-gen.js"></script>
     </main>

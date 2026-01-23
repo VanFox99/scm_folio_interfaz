@@ -45,7 +45,6 @@ function generarMinuta() {
     // Obtener el contenido de la zona de notas
     const notasDiv = document.getElementById('notas');
     const contenidoHTML = notasDiv.innerHTML; // Contenido con formato
-    console.log("Contenido HTML de notasDiv:", contenidoHTML);
 
     if (!contenidoHTML.trim()) {
         mostrarMensaje('No hay contenido en las notas para procesar.', false);
@@ -54,7 +53,6 @@ function generarMinuta() {
 
     // Crear un elemento temporal para manipular el HTML
     const puntosTratados = extraerPuntosTratados(contenidoHTML);
-    console.log("Puntos tratados extraídos:", puntosTratados);
 
     // Datos de la minuta
     const titulo = prompt("Ingrese el título de la reunión:");

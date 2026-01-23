@@ -1,3 +1,2 @@
 # DevOpsTools_SCM
-Se anade proyecto Interfaz SCM Folios
-Integracion version 1.2.0 (Generacion de Minuta)
+Integracion version 1.2.1 (Generacion de Minuta)

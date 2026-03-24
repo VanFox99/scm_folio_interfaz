@@ -1,74 +1,739 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <base href="/scm-folio-interfaz/" /> -->
     <title>SCM Folio Interfaz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <style>
+        /* ===== DESIGN SYSTEM ===== */
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #1c2128;
+            --bg-elevated: #21262d;
+            --border: #30363d;
+            --border-active: #388bfd;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #484f58;
+            --accent-cyan: #39d0d8;
+            --accent-blue: #388bfd;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --accent-orange: #d29922;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --font-sans: 'IBM Plex Sans', sans-serif;
+            --radius: 6px;
+            --radius-lg: 10px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-height: 56px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .logo-image {
+            height: 28px;
+            width: auto;
+            filter: brightness(1.2);
+        }
+
+        .header-title {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .header-title span {
+            color: var(--accent-cyan);
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        /* ===== NAV GROUPS ===== */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 0 4px;
+        }
+
+        .nav-group + .nav-group {
+            border-left: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            padding: 4px 10px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .nav-btn.primary {
+            color: var(--accent-cyan);
+        }
+
+        .nav-btn.primary:hover {
+            background: rgba(57,208,216,0.1);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex: 1;
+            padding: 28px 28px 40px;
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-intro {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 2px;
+            font-family: var(--font-mono);
+            border-left: 3px solid var(--accent-cyan);
+            padding-left: 12px;
+        }
+
+        /* ===== SEARCH SECTION ===== */
+        .search-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        #input-oferta {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 9px 12px 9px 38px;
+            border-radius: var(--radius);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        #input-oferta:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56,139,253,0.15);
+        }
+
+        #input-oferta::placeholder { color: var(--text-muted); }
+
+        .btn-search {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 9px 20px;
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-search:hover { background: #4493ff; transform: translateY(-1px); }
+        .btn-search:active { transform: translateY(0); }
+
+        #mensaje {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+
+        #mensaje.success {
+            background: rgba(63,185,80,0.1);
+            border: 1px solid rgba(63,185,80,0.3);
+            color: var(--accent-green);
+            display: block;
+        }
+
+        #mensaje.error {
+            background: rgba(248,81,73,0.1);
+            border: 1px solid rgba(248,81,73,0.3);
+            color: var(--accent-red);
+            display: block;
+        }
+
+        /* ===== NOTAS SECTION ===== */
+        .notas-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            flex: 1;
+        }
+
+        .notas-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        #notas {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            min-height: 260px;
+            max-height: 400px;
+            padding: 14px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-y: auto;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        #notas:focus { border-color: var(--accent-blue); }
+
+        #notas.placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .notas-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border-color: var(--border-active);
+        }
+
+        .btn-primary {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #4ee8ef;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(57,208,216,0.3);
+        }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 540px;
+            margin: 20px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.25s ease;
+        }
+
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius);
+            transition: all 0.15s;
+        }
+
+        .modal-close:hover { color: var(--text-primary); background: var(--bg-elevated); }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        .form-input, .form-textarea {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 9px 12px;
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            width: 100%;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56,139,253,0.15);
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .form-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .modal-footer {
+            padding: 16px 24px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* Preview area in modal */
+        .preview-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .preview-toggle input { cursor: pointer; accent-color: var(--accent-cyan); }
+
+        .puntos-preview {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            max-height: 120px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .puntos-preview.visible { display: block; }
+
+        .punto-item {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            padding: 2px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .punto-item:last-child { border-bottom: none; }
+
+        .punto-item::before {
+            content: '▸ ';
+            color: var(--accent-cyan);
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 6px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ===== GMAIL INFO BOX ===== */
+        .gmail-info {
+            background: rgba(57,208,216,0.06);
+            border: 1px solid rgba(57,208,216,0.25);
+            border-radius: var(--radius);
+            padding: 11px 14px;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+            line-height: 1.6;
+        }
+
+        .gmail-info strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 12px;
+            letter-spacing: .02em;
+        }
+
+        /* Char counter */
+        .char-counter {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body>
-
+    <!-- ===== HEADER ===== -->
     <header>
-        <div class="logo-header">
-            <img src="./images/scm_logo.png" alt="Logo de SCM Folio Interfaz" class="logo-image" />
-            <h1>Bienvenido a SCM Folio Interfaz</h1>
-            <div class="header-menus">
-                <div id="menu-utilidadesSecundarias" class="menu-utilidadesSecundarias">
-                    <input type="button" class="boton-menu" value="PPM" onclick="redireccionMenu('ppm')" />
-                    <input type="button" class="boton-menu" value="Softtek" onclick="redireccionMenu('softtek-home')" />
+        <div class="header-inner">
+            <div class="logo-section">
+                <img src="./images/scm_logo.png" alt="SCM" class="logo-image" />
+                <span class="header-title">SCM <span>Folio</span> Interfaz</span>
+            </div>
+            <div class="header-divider"></div>
+
+            <nav class="header-nav">
+                <div class="nav-group">
+                    <button class="nav-btn primary" onclick="redireccionMenu('ppm')">PPM</button>
+                    <button class="nav-btn primary" onclick="redireccionMenu('softtek-home')">Softtek</button>
                 </div>
-                <div id="menu-utilidadesPrincipales" class="menu-utilidadesPrincipales">
-                    <input type="button" class="boton-menu" value="GCP" onclick="redireccionMenu('gcp-console')" />
-                    <input type="button" class="boton-menu" value="AWS" onclick="redireccionMenu('aws-console')" />
-                    <input type="button" class="boton-menu" value="Azure" onclick="redireccionMenu('azure')" />
-                    <input type="button" class="boton-menu" value="GitHub" onclick="redireccionMenu('git-hub')" />
-                    <input type="button" class="boton-menu" value="Jira" onclick="redireccionMenu('jira')" />
+                <div class="nav-group">
+                    <button class="nav-btn" onclick="redireccionMenu('gcp-console')">GCP</button>
+                    <button class="nav-btn" onclick="redireccionMenu('aws-console')">AWS</button>
+                    <button class="nav-btn" onclick="redireccionMenu('azure')">Azure</button>
+                    <button class="nav-btn" onclick="redireccionMenu('git-hub')">GitHub</button>
+                    <button class="nav-btn" onclick="redireccionMenu('jira')">Jira</button>
                 </div>
-                <div id="menu-documentacion" class="menu-documentacion">
-                    <input type="button" class="boton-menu" value="Dev-Guide" onclick="redireccionMenu('dev-guide')" />
-                    <input type="button" class="boton-menu" value="Arq. Integracion"
-                        onclick="redireccionMenu('arq-integracion')" />
-                    <input type="button" class="boton-menu" value="Ambientacion-Guide"
-                        onclick="redireccionMenu('ambientacion-guide')" />
-                    <input type="button" class="boton-menu" value="Gestion-Cambio"
-                        onclick="redireccionMenu('gestion-practicas')" />
+                <div class="nav-group">
+                    <button class="nav-btn" onclick="redireccionMenu('dev-guide')">Dev-Guide</button>
+                    <button class="nav-btn" onclick="redireccionMenu('arq-integracion')">Arq. Integración</button>
+                    <button class="nav-btn" onclick="redireccionMenu('ambientacion-guide')">Ambientación</button>
+                    <button class="nav-btn" onclick="redireccionMenu('gestion-practicas')">Gestión Cambio</button>
                 </div>
+            </nav>
+
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                online
             </div>
         </div>
     </header>
+
+    <!-- ===== MAIN ===== -->
     <main>
-        <p>Esta es la interfaz principal para la gestión de actividades de operacion en el sistema Service Desk.</p>
-        <div class="busqueda-notas">
+        <p class="page-intro">// Gestión de actividades</p>
+
+        <!-- Búsqueda de folios -->
+        <div class="search-section">
+            <div class="section-label">🔍 Generar Folio</div>
             <form id="form-busqueda" action="">
-                <input id="input-oferta" class="input-busqueda" type="text" required pattern="[A-Za-z\s]{2,30}"
-                    maxlength="30" placeholder="¿Que necesitas hacer? ejemplo: Alcance" />
-                <div id="mensaje" class="mensaje"></div>
+                <div class="search-row">
+                    <div class="search-input-wrap">
+                        <span class="search-icon">⌕</span>
+                        <input id="input-oferta" class="search-input" type="text" required
+                            pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]{2,30}" maxlength="30"
+                            placeholder="¿Qué necesitas hacer? ej: Alcance, Firewall, VPN..." />
+                    </div>
+                    <button type="submit" class="btn-search">Generar Folio →</button>
+                </div>
+                <div id="mensaje"></div>
             </form>
         </div>
-        <div class="zona-notas">
-            <label style="font-size: medium;">Zona de notas (copy/paste):</label>
-            <div id="notas" class="scrollable-container placeholder" contenteditable="true" 
-                 onfocus="removePlaceholder(this)" onblur="addPlaceholder(this)" >
+
+        <!-- Zona de notas -->
+        <div class="notas-section">
+            <div class="notas-header">
+                <div class="section-label" style="margin-bottom:0">📝 Zona de Notas</div>
+                <span style="font-size:11px; color: var(--text-muted); font-family: var(--font-mono)" id="char-count">0 chars</span>
+            </div>
+
+            <div id="notas" class="placeholder" contenteditable="true"
+                 onfocus="removePlaceholder(this)" onblur="addPlaceholder(this)">
                 Escribe o pega tus notas aquí...
             </div>
-            <div class="botones">
-                <button class="boton-menu" id="btn-copy">Copy</button>
-                <button class="boton-menu" id="btn-generar-minuta">Generar Minuta</button>
+
+            <div class="notas-actions">
+                <button class="btn btn-ghost" id="btn-copy">
+                    ⎘ Copiar
+                </button>
+                <button class="btn btn-ghost" id="btn-clear">
+                    ✕ Limpiar
+                </button>
+                <button class="btn btn-primary" id="btn-generar-minuta">
+                    ✉ Enviar Minuta
+                </button>
             </div>
         </div>
-        <script>
-
-        </script>
-        <script src="./index.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="./minutas/minutas-gen.js"></script>
     </main>
-    <footer>
-        <p>&copy; 2025 SCM Folio Interfaz. Todos los derechos reservados.</p>
-    </footer>
-</body>
 
+    <!-- ===== MODAL MINUTA ===== -->
+    <div class="modal-overlay" id="modal-minuta">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">// Nueva Minuta de Reunión</span>
+                <button class="modal-close" id="btn-modal-close">✕</button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Info Gmail -->
+                <div class="gmail-info">
+                    <strong>✉ Flujo envio</strong>
+                    Se abrirá la minuta en una nueva pestaña con el formato listo.
+                    Copia el contenido y pégalo directamente en tu cliente mail.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Título de la reunión *</label>
+                    <input type="text" id="minuta-titulo" class="form-input"
+                        placeholder="ej: Daily Tren de Liberación Sucursales BanCoppel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Fecha</label>
+                    <input type="text" id="minuta-fecha" class="form-input" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Asistentes (separados por coma)</label>
+                    <input type="text" id="minuta-destinatarios" class="form-input"
+                        placeholder="usuario@coppel.com, otro@softtek.com" />
+                    <span class="form-hint">Aparecerán en la sección Asistentes de la minuta.<br>Se sugiere dejar vacia esta seccion en caso de ser mas de 10 Asistentes.</span>
+                </div>
+
+                <!-- Preview puntos -->
+                <div class="form-group">
+                    <label class="preview-toggle">
+                        <input type="checkbox" id="toggle-preview" /> Ver puntos detectados en las notas
+                    </label>
+                    <div class="puntos-preview" id="puntos-preview"></div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-modal-cancel">Cancelar</button>
+                <button class="btn btn-primary" id="btn-enviar-minuta">↗ Abrir Minuta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <span class="footer-text">© 2025 SCM Folio Interfaz · Ivan Palafox</span>
+        <span class="footer-text" id="footer-time"></span>
+    </footer>
+
+    <script src="./index.js"></script>
+    <script src="./minutas/minutas-gen.js"></script>
+</body>
 </html>

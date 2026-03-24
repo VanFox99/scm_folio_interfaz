@@ -150,17 +150,58 @@ function generarHTMLMinuta(titulo, fecha, puntos, asistentes) {
 // ===== ABRIR MODAL =====
 function abrirModalMinuta() {
     const notasDiv = document.getElementById('notas');
-    const contenido = (notasDiv.innerText || '').trim();
+    const contenidoHTML = notasDiv.innerHTML; // Contenido con formato
 
     if (!contenido || contenido === 'Escribe o pega tus notas aquí...') {
         mostrarMensaje('\u2717 No hay contenido en las notas.', false);
         return;
     }
 
-    const hoy = new Date().toLocaleDateString('es-MX', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-    document.getElementById('minuta-fecha').value = hoy;
+    // Crear un elemento temporal para manipular el HTML
+    const puntosTratados = extraerPuntosTratados(contenidoHTML);
+
+    // Datos de la minuta
+    const titulo = prompt("Ingrese el título de la reunión:");
+    const asistentesInput = prompt("Ingrese los asistentes en formato Gmail (En su defectoseparados por comas):");
+    const asistentes = asistentesInput ? asistentesInput.split(',') : [];
+
+    // Objeto constructor MinutaTemplate
+    const minuta = new MinutaTemplate(
+        "./images/softtek_logo.jpeg", // Ruta del logo
+        titulo, // Título de la minuta
+        undefined, // Fecha predeterminada
+        asistentes, // Array asistentes
+        puntosTratados // Pasar el array de puntos tratados directamente
+    );
+
+    // Crear el PDF
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    // Definir las dimensiones máximas del logo
+    const maxWidth = 50; // Ancho máximo permitido para el logo
+    const maxHeight = maxWidth; // Alto máximo permitido para el logo
+
+    // Agregar logo (si aplica)
+    try {
+        const dataURL = minuta.logotipo; // Cambia esto por la ruta de tu logo
+        const logoX = 10;
+        const logoY = 10;
+
+        // Crear una imagen para obtener las dimensiones originales
+        const img = new Image();
+        img.src = dataURL;
+        img.onload = () => {
+            // Calcular las dimensiones del logo manteniendo la proporción
+            const aspectRatio = img.width / img.height;
+            let logoWidth = maxWidth;
+            let logoHeight = maxHeight;
+
+            if (img.width > img.height) {
+                logoHeight = maxWidth / aspectRatio;
+            } else {
+                logoWidth = maxHeight * aspectRatio;
+            }
 
     const puntos = extraerPuntosTratados(notasDiv.innerHTML);
     const previewDiv = document.getElementById('puntos-preview');

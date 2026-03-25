@@ -147,11 +147,192 @@
         main {
             flex: 1;
             padding: 28px 28px 40px;
-            max-width: 1400px;
             width: 100%;
             display: flex;
             flex-direction: column;
             gap: 24px;
+        }
+
+        .main-columns {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            height: 100%;
+        }
+
+        /* ===== EVIDENCIA PANEL ===== */
+        .evidencia-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: sticky;
+            top: 72px;
+            max-height: calc(100vh - 88px);
+            overflow-y: auto;
+        }
+
+        .evidencia-section .section-label {
+            margin-bottom: 4px;
+        }
+
+        .ev-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .ev-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .ev-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .ev-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(56,139,253,0.15);
+        }
+
+        .ev-input::placeholder { color: var(--text-muted); }
+
+        .ev-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+
+        .ev-select:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .ev-select option { background: var(--bg-secondary); }
+
+        .ev-preview {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            min-height: 100px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .ev-preview.empty {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .btn-ev-copy {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-ev-copy:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border-color: var(--border-active);
+        }
+
+        .btn-ev-folio {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border: none;
+            padding: 9px 16px;
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            width: 100%;
+        }
+
+        .btn-ev-folio:hover {
+            background: #4ee8ef;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(57,208,216,0.3);
+        }
+
+        .ev-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ev-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 2px 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-columns {
+                grid-template-columns: 1fr;
+                align-items: start;
+            }
+            .evidencia-section {
+                position: static;
+                width: 100%;
+                order: -1;
+                max-height: none;
+                overflow-y: visible;
+            }
+            .left-col {
+                height: auto;
+            }
+            .summary-section {
+                flex: none;
+                min-height: 300px;
+            }
+            .activity-log {
+                flex: none;
+                max-height: 220px;
+            }
         }
 
         .page-intro {
@@ -270,7 +451,7 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
             padding: 20px 24px;
-            flex: 1;
+            flex-shrink: 0;
         }
 
         .notas-header {
@@ -590,6 +771,217 @@
             font-family: var(--font-mono);
             text-align: right;
         }
+
+        /* ===== DURATION SELECTOR ===== */
+        .duration-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .duration-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .duration-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: var(--radius);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .duration-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .duration-btn.selected {
+            background: rgba(57,208,216,0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* ===== ACTIVITY SUMMARY ===== */
+        .summary-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .stat-sub {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .activity-log {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .activity-log-empty {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 8px 0;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px 12px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .activity-item-num {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            min-width: 20px;
+        }
+
+        .activity-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .activity-item-name {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .activity-item-meta {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .activity-item-duration {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .activity-item-del {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: var(--radius);
+            transition: all 0.15s;
+        }
+
+        .activity-item-del:hover {
+            color: var(--accent-red);
+            background: rgba(248,81,73,0.1);
+        }
+
+        .btn-add-activity {
+            background: rgba(57,208,216,0.08);
+            border: 1px solid rgba(57,208,216,0.3);
+            color: var(--accent-cyan);
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            width: 100%;
+        }
+
+        .btn-add-activity:hover {
+            background: rgba(57,208,216,0.15);
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-clear-summary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: var(--radius);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-clear-summary:hover {
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
     </style>
 </head>
 
@@ -651,30 +1043,146 @@
             </form>
         </div>
 
-        <!-- Zona de notas -->
-        <div class="notas-section">
-            <div class="notas-header">
-                <div class="section-label" style="margin-bottom:0">📝 Zona de Notas</div>
-                <span style="font-size:11px; color: var(--text-muted); font-family: var(--font-mono)" id="char-count">0 chars</span>
+        <!-- Dos columnas: notas | evidencia -->
+        <div class="main-columns">
+
+            <!-- Columna izquierda: Zona de notas -->
+            <div class="left-col">
+                <div class="notas-section">
+                    <div class="notas-header">
+                        <div class="section-label" style="margin-bottom:0">📝 Zona de Notas</div>
+                        <span style="font-size:11px; color: var(--text-muted); font-family: var(--font-mono)" id="char-count">0 chars</span>
+                    </div>
+
+                    <div id="notas" class="placeholder" contenteditable="true"
+                         onfocus="removePlaceholder(this)" onblur="addPlaceholder(this)">
+                    </div>
+
+                    <div class="notas-actions">
+                        <button class="btn btn-ghost" id="btn-copy">
+                            ⎘ Copiar
+                        </button>
+                        <button class="btn btn-ghost" id="btn-clear">
+                            ✕ Limpiar
+                        </button>
+                        <button class="btn btn-primary" id="btn-generar-minuta">
+                            ✉ Enviar Minuta
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== RESUMEN DE ACTIVIDADES ===== -->
+                <div class="summary-section">
+                    <div class="summary-header">
+                        <div class="section-label" style="margin-bottom:0">📊 Resumen de Actividades</div>
+                        <button class="btn-clear-summary" id="btn-clear-summary">✕ Limpiar</button>
+                    </div>
+
+                    <div class="summary-stats">
+                        <div class="stat-card">
+                            <span class="stat-label">Actividades</span>
+                            <span class="stat-value" id="stat-count">0</span>
+                            <span class="stat-sub">registradas</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Tiempo total</span>
+                            <span class="stat-value" id="stat-total-hrs">0</span>
+                            <span class="stat-sub">minutos</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-log" id="activity-log">
+                        <span class="activity-log-empty" id="activity-log-empty">Sin actividades registradas aún.</span>
+                    </div>
+                </div>
+
             </div>
 
-            <div id="notas" class="placeholder" contenteditable="true"
-                 onfocus="removePlaceholder(this)" onblur="addPlaceholder(this)">
-                Escribe o pega tus notas aquí, en caso de minuta, cada punto es tomado seguido de un 'enter'...
+            <!-- Columna derecha: Generador de Evidencia SCM -->
+            <div class="evidencia-section">
+                <div class="section-label">🧾 Registro Actividades</div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Nombre del sistema / servicio / recurso</span>
+                    <input type="text" id="ev-sistema" class="ev-input" placeholder="ej: GCP, api-service, load balancer..." />
+                </div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Actividad realizada</span>
+                    <input type="text" id="ev-actividad" class="ev-input" placeholder="ej: Ambientacion, Consultoria Tecnica..." />
+                </div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Responsable / Ejecutor</span>
+                    <input type="text" id="ev-responsable" class="ev-input" placeholder="Nombre SCM" />
+                </div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Ambiente</span>
+                    <select id="ev-ambiente" class="ev-select">
+                        <option value="Producción">Producción</option>
+                        <option value="Staging">Staging</option>
+                        <option value="Desarrollo">Desarrollo</option>
+                        <option value="QA">QA</option>
+                        <option value="Sandbox">Sandbox</option>
+                    </select>
+                </div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Estado</span>
+                    <select id="ev-estado" class="ev-select">
+                        <option value="Completada exitosamente ✓">Completada exitosamente ✓</option>
+                        <option value="En progreso">En progreso</option>
+                        <option value="Pendiente validación">Pendiente validación</option>
+                        <option value="Revertida">Revertida</option>
+                        <option value="Fallida">Fallida</option>
+                    </select>
+                </div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Observaciones (opcional)</span>
+                    <input type="text" id="ev-observaciones" class="ev-input" placeholder="Sin incidencias, requiere reinicio..." />
+                </div>
+
+                <div class="ev-field duration-field">
+                    <span class="ev-label">Duración (min)</span>
+                    <div class="duration-options" id="duration-options">
+                        <button class="duration-btn" data-val="5">5</button>
+                        <button class="duration-btn" data-val="10">10</button>
+                        <button class="duration-btn" data-val="25">25</button>
+                        <button class="duration-btn" data-val="30">30</button>
+                        <button class="duration-btn" data-val="45">45</button>
+                        <button class="duration-btn" data-val="60">60</button>
+                        <button class="duration-btn" data-val="90">90</button>
+                        <button class="duration-btn" data-val="120">120</button>
+                        <button class="duration-btn" data-val="150">150</button>
+                        <button class="duration-btn" data-val="180">180</button>
+                        <button class="duration-btn" data-val="240">240</button>
+                        <button class="duration-btn" data-val="360">360</button>
+                        <button class="duration-btn" data-val="480">480</button>
+                        <button class="duration-btn" data-val="custom">+</button>
+                    </div>
+                    <input type="number" id="ev-duracion-custom" class="ev-input" placeholder="Minutos personalizados..." min="1" style="display:none; margin-top:6px;" />
+                    <input type="hidden" id="ev-duracion" value="" />
+                </div>
+
+                <div class="ev-divider"></div>
+
+                <div class="ev-field">
+                    <span class="ev-label">Vista previa del cuerpo</span>
+                    <div class="ev-preview empty" id="ev-preview">Completa los campos para generar el cuerpo de evidencia...</div>
+                </div>
+
+                <div class="ev-actions">
+                    <button class="btn-ev-copy" id="btn-ev-copy">⎘ Copiar</button>
+                    <button class="btn-ev-folio" id="btn-ev-folio">↗ Abrir Folio SCM Control</button>
+                </div>
+                <button class="btn-add-activity" id="btn-add-activity">＋ Registrar actividad en resumen</button>
+
             </div>
 
-            <div class="notas-actions">
-                <button class="btn btn-ghost" id="btn-copy">
-                    ⎘ Copiar
-                </button>
-                <button class="btn btn-ghost" id="btn-clear">
-                    ✕ Limpiar
-                </button>
-                <button class="btn btn-primary" id="btn-generar-minuta">
-                    ✉ Enviar Minuta
-                </button>
-            </div>
         </div>
+
     </main>
 
     <!-- ===== MODAL MINUTA ===== -->
@@ -735,5 +1243,109 @@
 
     <script src="./index.js"></script>
     <script src="./minutas/minutas-gen.js"></script>
+    <script>
+    // ===== DURATION SELECTOR =====
+    document.addEventListener('DOMContentLoaded', () => {
+        let selectedDuration = null;
+        const durationBtns = document.querySelectorAll('.duration-btn');
+        const durationHidden = document.getElementById('ev-duracion');
+        const durationCustom = document.getElementById('ev-duracion-custom');
+
+        durationBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                durationBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                if (btn.dataset.val === 'custom') {
+                    durationCustom.style.display = 'block';
+                    durationCustom.focus();
+                    durationHidden.value = '';
+                    selectedDuration = null;
+                } else {
+                    durationCustom.style.display = 'none';
+                    selectedDuration = parseInt(btn.dataset.val);
+                    durationHidden.value = selectedDuration;
+                }
+            });
+        });
+
+        durationCustom.addEventListener('input', () => {
+            const v = parseInt(durationCustom.value);
+            if (v > 0) { selectedDuration = v; durationHidden.value = v; }
+        });
+
+        // ===== ACTIVITY SUMMARY =====
+        let activities = [];
+
+        function formatDuration(mins) {
+            if (!mins) return '—';
+            return `${mins} min`;
+        }
+
+        function updateSummaryStats() {
+            const count = activities.length;
+            const total = activities.reduce((s, a) => s + (a.duration || 0), 0);
+            document.getElementById('stat-count').textContent = count;
+            document.getElementById('stat-total-hrs').textContent = total;
+        }
+
+        function renderActivityLog() {
+            const log = document.getElementById('activity-log');
+            const empty = document.getElementById('activity-log-empty');
+            log.querySelectorAll('.activity-item').forEach(el => el.remove());
+            if (activities.length === 0) {
+                empty.style.display = 'block';
+            } else {
+                empty.style.display = 'none';
+                activities.forEach((act, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'activity-item';
+                    item.innerHTML = `
+                        <span class="activity-item-num">#${i + 1}</span>
+                        <div class="activity-item-info">
+                            <span class="activity-item-name">${act.actividad || '—'}</span>
+                            <span class="activity-item-meta">${act.sistema ? act.sistema + ' · ' : ''}${act.ambiente} · ${act.hora}</span>
+                        </div>
+                        <span class="activity-item-duration">${formatDuration(act.duration)}</span>
+                        <button class="activity-item-del" data-index="${i}" title="Eliminar">✕</button>
+                    `;
+                    log.appendChild(item);
+                });
+                log.querySelectorAll('.activity-item-del').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        activities.splice(parseInt(btn.dataset.index), 1);
+                        renderActivityLog();
+                        updateSummaryStats();
+                    });
+                });
+            }
+        }
+
+        document.getElementById('btn-add-activity').addEventListener('click', () => {
+            const actividad = document.getElementById('ev-actividad').value.trim();
+            const sistema   = document.getElementById('ev-sistema').value.trim();
+            const ambiente  = document.getElementById('ev-ambiente').value;
+            const duration  = selectedDuration;
+
+            if (!actividad) {
+                mostrarMensaje('Escribe una actividad antes de registrar.', false, 3000);
+                return;
+            }
+            const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+            activities.push({ actividad, sistema, ambiente, duration, hora });
+            renderActivityLog();
+            updateSummaryStats();
+            mostrarMensaje(`✓ Actividad registrada${duration ? ' — ' + duration + ' min' : ''}`, true, 2500);
+        });
+
+        document.getElementById('btn-clear-summary').addEventListener('click', () => {
+            if (activities.length === 0) return;
+            if (confirm('¿Limpiar todo el resumen de actividades?')) {
+                activities = [];
+                renderActivityLog();
+                updateSummaryStats();
+            }
+        });
+    });
+    </script>
 </body>
 </html>

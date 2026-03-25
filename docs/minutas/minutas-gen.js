@@ -153,7 +153,7 @@ function abrirModalMinuta() {
     const contenidoHTML = notasDiv.innerHTML;
     const contenidoTexto = notasDiv.innerText.trim();
 
-    if (!contenidoTexto || contenidoTexto === 'Escribe o pega tus notas aquí...') {
+    if (!contenidoTexto || contenidoTexto === PLACEHOLDER_TEXT || contenidoTexto.startsWith("Escribe o pega")) {
         mostrarMensaje('\u2717 No hay contenido en las notas.', false);
         return;
     }

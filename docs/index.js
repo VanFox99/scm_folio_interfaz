@@ -86,7 +86,7 @@ const ofertas = new Map([
     [3385, { nombre: "Respaldos de Base de Datos", tags: ["backup bd onpremise", "respaldo bd onpremise", "respaldo onpremise bd", "bd onpremise"] }]
 ]);
 
-// ===== FUNCIONES AUXILIARES =====
+const PLACEHOLDER_TEXT = "Escribe o pega tus notas aquí, en caso de minuta, cada punto es tomado seguido de un 'enter'...";
 function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
     const mensajeDiv = document.getElementById('mensaje');
     mensajeDiv.textContent = texto;
@@ -101,7 +101,7 @@ function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
 }
 
 function removePlaceholder(element) {
-    if (element.innerText.trim() === "Escribe o pega tus notas aquí...") {
+    if (element.innerText.trim() === PLACEHOLDER_TEXT) {
         element.innerText = "";
         element.classList.remove("placeholder");
     }
@@ -109,7 +109,7 @@ function removePlaceholder(element) {
 
 function addPlaceholder(element) {
     if (element.innerText.trim() === "") {
-        element.innerText = "Escribe o pega tus notas aquí...";
+        element.innerText = PLACEHOLDER_TEXT;
         element.classList.add("placeholder");
     }
 }
@@ -146,7 +146,7 @@ function redireccionMenu(nombrePagina) {
 function copiarNota() {
     const notasDiv = document.getElementById('notas');
     const text = notasDiv.innerText;
-    if (!text || text === "Escribe o pega tus notas aquí...") {
+    if (!text || text === PLACEHOLDER_TEXT) {
         mostrarMensaje("No hay nada que copiar.", false, 3000);
         return;
     }
@@ -167,7 +167,7 @@ function copiarNota() {
 // ===== CHAR COUNTER =====
 function updateCharCount() {
     const notasDiv = document.getElementById('notas');
-    const count = notasDiv.innerText.trim() === "Escribe o pega tus notas aquí..." ? 0 : notasDiv.innerText.length;
+    const count = notasDiv.innerText.trim() === PLACEHOLDER_TEXT ? 0 : notasDiv.innerText.length;
     document.getElementById('char-count').textContent = `${count} chars`;
 }
 
@@ -178,12 +178,50 @@ function updateClock() {
         now.toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
+// ===== EVIDENCIA SCM =====
+function generarTextoEvidencia() {
+    const sistema      = document.getElementById('ev-sistema').value.trim();
+    const actividad    = document.getElementById('ev-actividad').value.trim();
+    const responsable  = document.getElementById('ev-responsable').value.trim();
+    const ambiente     = document.getElementById('ev-ambiente').value;
+    const estado       = document.getElementById('ev-estado').value;
+    const obs          = document.getElementById('ev-observaciones').value.trim();
+    const fecha        = new Date().toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
+
+    if (!sistema && !actividad && !responsable) return null;
+
+    let texto = `───────────────────────────────────────────────\n`;
+    texto += `📋  CUERPO EVIDENCIA — SCM Control\n`;
+    texto += `───────────────────────────────────────────────\n`;
+    texto += `Fecha/Hora   : ${fecha}\n`;
+    if (sistema)     texto += `Sistema      : ${sistema}\n`;
+    if (actividad)   texto += `Actividad    : ${actividad}\n`;
+    if (responsable) texto += `Responsable  : ${responsable}\n`;
+    texto += `Ambiente     : ${ambiente}\n`;
+    texto += `Estado       : ${estado}\n`;
+    if (obs)         texto += `Observaciones: ${obs}\n`;
+    texto += `───────────────────────────────────────────────`;
+    return texto;
+}
+
+function actualizarPreviewEvidencia() {
+    const preview = document.getElementById('ev-preview');
+    const texto = generarTextoEvidencia();
+    if (texto) {
+        preview.textContent = texto;
+        preview.classList.remove('empty');
+    } else {
+        preview.textContent = 'Completa los campos para generar el cuerpo de evidencia...';
+        preview.classList.add('empty');
+    }
+}
+
 // ===== EVENTOS =====
 document.addEventListener('DOMContentLoaded', () => {
     // Placeholder init
     const notasDiv = document.getElementById('notas');
     if (notasDiv.innerText.trim() === "") {
-        notasDiv.innerText = "Escribe o pega tus notas aquí...";
+        notasDiv.innerText = PLACEHOLDER_TEXT;
         notasDiv.classList.add("placeholder");
     }
     notasDiv.addEventListener('focus', () => removePlaceholder(notasDiv));
@@ -203,6 +241,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clock
     updateClock();
     setInterval(updateClock, 60000);
+
+    // ===== EVIDENCIA: live preview =====
+    ['ev-sistema', 'ev-actividad', 'ev-responsable', 'ev-observaciones'].forEach(id => {
+        document.getElementById(id).addEventListener('input', actualizarPreviewEvidencia);
+    });
+    ['ev-ambiente', 'ev-estado'].forEach(id => {
+        document.getElementById(id).addEventListener('change', actualizarPreviewEvidencia);
+    });
+
+    // Copiar evidencia
+    document.getElementById('btn-ev-copy').addEventListener('click', () => {
+        const texto = generarTextoEvidencia();
+        if (!texto) { mostrarMensaje('Completa al menos un campo de evidencia.', false, 3000); return; }
+        navigator.clipboard.writeText(texto).then(() => {
+            mostrarMensaje('✓ Evidencia copiada en portapapeles', true, 3000);
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = texto;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            mostrarMensaje('✓ Evidencia copiada en portapapeles', true, 3000);
+        });
+    });
+
+    // Abrir folio SCM Control (ID 10820)
+    document.getElementById('btn-ev-folio').addEventListener('click', () => {
+        window.open('https://servicedesk.coppel.com/incident/create/index/category/10820', '_blank');
+    });
 });
 
 // Búsqueda form

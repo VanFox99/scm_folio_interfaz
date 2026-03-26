@@ -118,21 +118,63 @@ function addPlaceholder(element) {
 function generarUrls(ofertas, respuestaLower) {
     if (!respuestaLower) {
         mostrarMensaje('Por favor, ingresa una oferta.', false);
-        return;
+        return [];
     }
-    const resultado = [...ofertas.entries()].find(([id, oferta]) =>
+    return [...ofertas.entries()].filter(([id, oferta]) =>
         oferta.nombre.toLowerCase().includes(respuestaLower) ||
         oferta.tags.some(tag => tag.toLowerCase().includes(respuestaLower))
     );
-    if (resultado) {
-        const [id, oferta] = resultado;
-        const urlFinal = urlBase.replace('ID', id);
-        mostrarMensaje(`✓ Folio generado | ${oferta.nombre}`);
-        setTimeout(() => { window.open(urlFinal, '_blank'); }, 800);
-    } else {
-        mostrarMensaje("✗ No se encontró coincidencia. Intenta con otro término.", false);
-    }
 }
+
+function abrirFolio(id) {
+    window.open(urlBase.replace('ID', id), '_blank');
+}
+
+function mostrarDropdownFolios(resultados) {
+    const dropdown = document.getElementById('folio-dropdown');
+    dropdown.innerHTML = '';
+
+    if (resultados.length === 0) {
+        dropdown.classList.remove('visible');
+        mostrarMensaje('✗ No se encontró coincidencia. Intenta con otro término.', false);
+        return;
+    }
+
+    if (resultados.length === 1) {
+        const [id, oferta] = resultados[0];
+        mostrarMensaje(`✓ Folio generado | ${oferta.nombre}`);
+        setTimeout(() => abrirFolio(id), 800);
+        dropdown.classList.remove('visible');
+        return;
+    }
+
+    const header = document.createElement('div');
+    header.className = 'folio-results-header';
+    header.textContent = `${resultados.length} coincidencias — elige una`;
+    dropdown.appendChild(header);
+
+    resultados.forEach(([id, oferta]) => {
+        const item = document.createElement('div');
+        item.className = 'folio-result-item';
+        item.innerHTML = `<span class="folio-result-name">${oferta.nombre}</span><span class="folio-result-id">#${id}</span>`;
+        item.addEventListener('click', () => {
+            abrirFolio(id);
+            mostrarMensaje(`✓ Abriendo folio | ${oferta.nombre}`);
+            dropdown.classList.remove('visible');
+            document.getElementById('input-oferta').value = '';
+        });
+        dropdown.appendChild(item);
+    });
+
+    dropdown.classList.add('visible');
+}
+
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('folio-dropdown');
+    if (dropdown && !dropdown.contains(e.target) && e.target.id !== 'input-oferta') {
+        dropdown.classList.remove('visible');
+    }
+});
 
 function redireccionMenu(nombrePagina) {
     const pagina = arrayPaginas.find(p => p.nombre === nombrePagina);
@@ -197,7 +239,7 @@ function generarTextoEvidencia() {
     if (sistema)     texto += `Sistema      : ${sistema}\n`;
     if (actividad)   texto += `Actividad    : ${actividad}\n`;
     if (responsable) texto += `Responsable  : ${responsable}\n`;
-    texto += `Ambiente     : ${ambiente}\n`;
+    if (ambiente)    texto += `Ambiente     : ${ambiente}\n`;
     texto += `Estado       : ${estado}\n`;
     if (obs)         texto += `Observaciones: ${obs}\n`;
     texto += `───────────────────────────────────────────────`;
@@ -278,6 +320,7 @@ document.getElementById('form-busqueda').addEventListener('submit', function (ev
     event.preventDefault();
     const input = document.getElementById('input-oferta');
     const respuestaLower = input.value.toLowerCase().trim();
-    generarUrls(ofertas, respuestaLower);
-    input.value = '';
+    const resultados = generarUrls(ofertas, respuestaLower);
+    mostrarDropdownFolios(resultados);
+    if (resultados.length !== 1) input.value = '';
 });

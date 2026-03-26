@@ -86,7 +86,7 @@ const ofertas = new Map([
     [3385, { nombre: "Respaldos de Base de Datos", tags: ["backup bd onpremise", "respaldo bd onpremise", "respaldo onpremise bd", "bd onpremise"] }]
 ]);
 
-// ===== FUNCIONES AUXILIARES =====
+const PLACEHOLDER_TEXT = "Escribe o pega tus notas aquí, en caso de minuta, cada punto es tomado seguido de un 'enter'...";
 function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
     const mensajeDiv = document.getElementById('mensaje');
     mensajeDiv.textContent = texto;
@@ -101,7 +101,7 @@ function mostrarMensaje(texto, esExito = true, tiempo = 5000) {
 }
 
 function removePlaceholder(element) {
-    if (element.innerText.trim() === "Escribe o pega tus notas aquí...") {
+    if (element.innerText.trim() === PLACEHOLDER_TEXT) {
         element.innerText = "";
         element.classList.remove("placeholder");
     }
@@ -109,7 +109,7 @@ function removePlaceholder(element) {
 
 function addPlaceholder(element) {
     if (element.innerText.trim() === "") {
-        element.innerText = "Escribe o pega tus notas aquí...";
+        element.innerText = PLACEHOLDER_TEXT;
         element.classList.add("placeholder");
     }
 }
@@ -118,21 +118,63 @@ function addPlaceholder(element) {
 function generarUrls(ofertas, respuestaLower) {
     if (!respuestaLower) {
         mostrarMensaje('Por favor, ingresa una oferta.', false);
-        return;
+        return [];
     }
-    const resultado = [...ofertas.entries()].find(([id, oferta]) =>
+    return [...ofertas.entries()].filter(([id, oferta]) =>
         oferta.nombre.toLowerCase().includes(respuestaLower) ||
         oferta.tags.some(tag => tag.toLowerCase().includes(respuestaLower))
     );
-    if (resultado) {
-        const [id, oferta] = resultado;
-        const urlFinal = urlBase.replace('ID', id);
-        mostrarMensaje(`✓ Folio generado | ${oferta.nombre}`);
-        setTimeout(() => { window.open(urlFinal, '_blank'); }, 800);
-    } else {
-        mostrarMensaje("✗ No se encontró coincidencia. Intenta con otro término.", false);
-    }
 }
+
+function abrirFolio(id) {
+    window.open(urlBase.replace('ID', id), '_blank');
+}
+
+function mostrarDropdownFolios(resultados) {
+    const dropdown = document.getElementById('folio-dropdown');
+    dropdown.innerHTML = '';
+
+    if (resultados.length === 0) {
+        dropdown.classList.remove('visible');
+        mostrarMensaje('✗ No se encontró coincidencia. Intenta con otro término.', false);
+        return;
+    }
+
+    if (resultados.length === 1) {
+        const [id, oferta] = resultados[0];
+        mostrarMensaje(`✓ Folio generado | ${oferta.nombre}`);
+        setTimeout(() => abrirFolio(id), 800);
+        dropdown.classList.remove('visible');
+        return;
+    }
+
+    const header = document.createElement('div');
+    header.className = 'folio-results-header';
+    header.textContent = `${resultados.length} coincidencias — elige una`;
+    dropdown.appendChild(header);
+
+    resultados.forEach(([id, oferta]) => {
+        const item = document.createElement('div');
+        item.className = 'folio-result-item';
+        item.innerHTML = `<span class="folio-result-name">${oferta.nombre}</span><span class="folio-result-id">#${id}</span>`;
+        item.addEventListener('click', () => {
+            abrirFolio(id);
+            mostrarMensaje(`✓ Abriendo folio | ${oferta.nombre}`);
+            dropdown.classList.remove('visible');
+            document.getElementById('input-oferta').value = '';
+        });
+        dropdown.appendChild(item);
+    });
+
+    dropdown.classList.add('visible');
+}
+
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('folio-dropdown');
+    if (dropdown && !dropdown.contains(e.target) && e.target.id !== 'input-oferta') {
+        dropdown.classList.remove('visible');
+    }
+});
 
 function redireccionMenu(nombrePagina) {
     const pagina = arrayPaginas.find(p => p.nombre === nombrePagina);
@@ -146,7 +188,7 @@ function redireccionMenu(nombrePagina) {
 function copiarNota() {
     const notasDiv = document.getElementById('notas');
     const text = notasDiv.innerText;
-    if (!text || text === "Escribe o pega tus notas aquí...") {
+    if (!text || text === PLACEHOLDER_TEXT) {
         mostrarMensaje("No hay nada que copiar.", false, 3000);
         return;
     }
@@ -167,7 +209,7 @@ function copiarNota() {
 // ===== CHAR COUNTER =====
 function updateCharCount() {
     const notasDiv = document.getElementById('notas');
-    const count = notasDiv.innerText.trim() === "Escribe o pega tus notas aquí..." ? 0 : notasDiv.innerText.length;
+    const count = notasDiv.innerText.trim() === PLACEHOLDER_TEXT ? 0 : notasDiv.innerText.length;
     document.getElementById('char-count').textContent = `${count} chars`;
 }
 
@@ -178,12 +220,50 @@ function updateClock() {
         now.toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
+// ===== EVIDENCIA SCM =====
+function generarTextoEvidencia() {
+    const sistema      = document.getElementById('ev-sistema').value.trim();
+    const actividad    = document.getElementById('ev-actividad').value.trim();
+    const responsable  = document.getElementById('ev-responsable').value.trim();
+    const ambiente     = document.getElementById('ev-ambiente').value;
+    const estado       = document.getElementById('ev-estado').value;
+    const obs          = document.getElementById('ev-observaciones').value.trim();
+    const fecha        = new Date().toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
+
+    if (!sistema && !actividad && !responsable) return null;
+
+    let texto = `───────────────────────────────────────────────\n`;
+    texto += `📋  CUERPO EVIDENCIA — SCM Control\n`;
+    texto += `───────────────────────────────────────────────\n`;
+    texto += `Fecha/Hora   : ${fecha}\n`;
+    if (sistema)     texto += `Sistema      : ${sistema}\n`;
+    if (actividad)   texto += `Actividad    : ${actividad}\n`;
+    if (responsable) texto += `Responsable  : ${responsable}\n`;
+    if (ambiente)    texto += `Ambiente     : ${ambiente}\n`;
+    texto += `Estado       : ${estado}\n`;
+    if (obs)         texto += `Observaciones: ${obs}\n`;
+    texto += `───────────────────────────────────────────────`;
+    return texto;
+}
+
+function actualizarPreviewEvidencia() {
+    const preview = document.getElementById('ev-preview');
+    const texto = generarTextoEvidencia();
+    if (texto) {
+        preview.textContent = texto;
+        preview.classList.remove('empty');
+    } else {
+        preview.textContent = 'Completa los campos para generar el cuerpo de evidencia...';
+        preview.classList.add('empty');
+    }
+}
+
 // ===== EVENTOS =====
 document.addEventListener('DOMContentLoaded', () => {
     // Placeholder init
     const notasDiv = document.getElementById('notas');
     if (notasDiv.innerText.trim() === "") {
-        notasDiv.innerText = "Escribe o pega tus notas aquí...";
+        notasDiv.innerText = PLACEHOLDER_TEXT;
         notasDiv.classList.add("placeholder");
     }
     notasDiv.addEventListener('focus', () => removePlaceholder(notasDiv));
@@ -203,6 +283,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clock
     updateClock();
     setInterval(updateClock, 60000);
+
+    // ===== EVIDENCIA: live preview =====
+    ['ev-sistema', 'ev-actividad', 'ev-responsable', 'ev-observaciones'].forEach(id => {
+        document.getElementById(id).addEventListener('input', actualizarPreviewEvidencia);
+    });
+    ['ev-ambiente', 'ev-estado'].forEach(id => {
+        document.getElementById(id).addEventListener('change', actualizarPreviewEvidencia);
+    });
+
+    // Copiar evidencia
+    document.getElementById('btn-ev-copy').addEventListener('click', () => {
+        const texto = generarTextoEvidencia();
+        if (!texto) { mostrarMensaje('Completa al menos un campo de evidencia.', false, 3000); return; }
+        navigator.clipboard.writeText(texto).then(() => {
+            mostrarMensaje('✓ Evidencia copiada en portapapeles', true, 3000);
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = texto;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            mostrarMensaje('✓ Evidencia copiada en portapapeles', true, 3000);
+        });
+    });
+
+    // Abrir folio SCM Control (ID 10820)
+    document.getElementById('btn-ev-folio').addEventListener('click', () => {
+        window.open('https://servicedesk.coppel.com/incident/create/index/category/10820', '_blank');
+    });
 });
 
 // Búsqueda form
@@ -210,6 +320,7 @@ document.getElementById('form-busqueda').addEventListener('submit', function (ev
     event.preventDefault();
     const input = document.getElementById('input-oferta');
     const respuestaLower = input.value.toLowerCase().trim();
-    generarUrls(ofertas, respuestaLower);
-    input.value = '';
+    const resultados = generarUrls(ofertas, respuestaLower);
+    mostrarDropdownFolios(resultados);
+    if (resultados.length !== 1) input.value = '';
 });

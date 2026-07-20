@@ -21,54 +21,29 @@ const arrayPaginas = [
 
 // Mapa de ofertas con sus nombres y tags asociados
 const ofertas = new Map([
-    //Cloud Operations
+    //Cloud Operations V2
     [10820, { nombre: "SCM Control", tags: ["scm control", "scmcontrol", "scm"] }],
     [8384, { nombre: "(ABC) Alta/Baja/Modificacion de Licencias en la plataforma de Azure DevOps/Jira/Confluence", tags: ["azure devops", "azure", "jira", "confluence"] }],
-    [7902, { nombre: "ABC DNS", tags: ["modificar dns", "modificar dominio"] }],
-    [3668, { nombre: "ABC DNS Interno o Externo", tags: ["dns", "dns interno", "dns externo"] }],
-    [7898, { nombre: "ABC APIs", tags: ["api", "apis", "extension"] }],
-    [7892, { nombre: "ABC BD (MySQL, PostgreSQL, SQL Server)", tags: ["base de datos", "bd", "mysql", "postgresql", "sql server", "modificar bd", "modificar base de datos"] }],
-    [7919, { nombre: "Upgrade BD", tags: ["upgrade bd", "mejorar bd", "mejorar base de datos", "version bd", "version base de datos"] }],
-    [7918, { nombre: "Update BD", tags: ["actualizar bd", "actualizar base de datos"] }],
-    [10397, { nombre: "Backup DB", tags: ["backup db", "respaldo db", "respaldo base de datos"] }],
-    [10399, { nombre: "Restore Backup DB", tags: ["restore backup db", "restaurar respaldo db", "restaurar respaldo base de datos"] }],
-    [7904, { nombre: "ABC Proxy DB", tags: ["proxy db", "proxy base de datos"] }],
-    [7907, { nombre: "ABC Usuarios", tags: ["usuarios", "usuario"] }],
-    [10393, { nombre: "ABC Usuario BD", tags: ["usuario bd", "usuario base de datos"] }],
-    [10395, { nombre: "ABC Permisos Usuario BD", tags: ["permisos usuario bd", "permisos usuario base de datos", "pg_hba", "pghba", "pg hba"] }],
-    [7920, { nombre: "ABC VDIs", tags: ["vdi", "vdii", "escritorio virtual"] }],
-    [7915, { nombre: "ABC VCPUs", tags: ["vcpu", "vcpus", "cpu virtual"] }],
-    [7894, { nombre: "ABC Instance Group", tags: ["instance group", "grupo de instancias"] }],
-    [10396, { nombre: "Backup OS y/o Snapshot", tags: ["backup os", "snapshot", "respaldo sistema operativo", "imagen", "respaldo os"] }],
-    [10398, { nombre: "Restore Backup OS y/o Snapshot", tags: ["restore os", "restaurar respaldo", "recuperar snapshot", "restaurar os"] }],
-    [7913, { nombre: "ABC VMs", tags: ["vm", "virtual machine", "maquina virtual", "servidor virtual", "crear vm", "borrar vm"] }],
-    [7901, { nombre: "ABC TAGs to VMs", tags: ["etiquetas vm", "tags vm", "etiquetar servidor", "tagging"] }],
-    [7895, { nombre: "ABC Memory VM", tags: ["ram vm", "memoria vm", "aumentar ram", "recursos vm", "memoria"] }],
-    [7916, { nombre: "Update OS VMs", tags: ["actualizar os", "parches", "update sistema operativo", "linux", "windows", "patching"] }],
-    [7917, { nombre: "Upgrade OS VMs", tags: ["upgrade os", "version sistema operativo", "subir version", "migrar os"] }],
-    [10392, { nombre: "ABC Usuario OS", tags: ["usuario os", "user os", "cuenta sistema operativo", "acceso servidor", "crear usuario"] }],
-    [10394, { nombre: "ABC Permisos Usuario OS", tags: ["permisos os", "sudo", "root", "admin", "privilegios", "acceso root"] }],
-    [7893, { nombre: "ABC Cloud Storage", tags: ["storage", "almacenamiento", "bucket", "disco nube", "espacio"] }],
-    [3666, { nombre: "ABC Cluster Kubernetes Nube", tags: ["k8s", "kubernetes", "cluster", "aks", "gke", "eks", "contenedor"] }],
-    [7891, { nombre: "ABC - Node pools Cluster Kubernetes", tags: ["node pool", "nodos", "workers", "grupo de nodos"] }],
-    [7905, { nombre: "Incremento de recursos en Node Pools / GKE", tags: ["escalar nodos", "mas recursos k8s", "cpu nodos", "memoria nodos", "gke recursos"] }],
-    [7911, { nombre: "Upgrade Cluster Kubernetes", tags: ["actualizar k8s", "version kubernetes", "upgrade cluster", "actualizar cluster"] }],
-    [7912, { nombre: "Backup & Restore Kubernetes", tags: ["velero", "backup k8s", "restaurar k8s", "respaldo cluster", "snapshot k8s"] }],
-    [7897, { nombre: "ABC IPs Internas y Externas", tags: ["ip address", "direccion ip", "ip publica", "ip privada", "reservar ip", "static ip"] }],
-    [7909, { nombre: "ABC Keys", tags: ["llaves", "ssh keys", "claves", "access keys", "credenciales", "key pair"] }],
-    [7914, { nombre: "ABC Memoria RAM", tags: ["ram", "memoria", "aumentar memoria", "recursos", "memory"] }],
-    [7908, { nombre: "ABC Permisos", tags: ["iam", "roles", "accesos", "privilegios", "policies", "permisos nube"] }],
-    [7906, { nombre: "ABC Proyectos", tags: ["projects", "gcp project", "azure subscription", "crear proyecto", "borrar proyecto", "resource group"] }],
-    [7910, { nombre: "ABC Service Account o usuario", tags: ["sa", "service account", "cuenta de servicio", "cuenta tecnica", "robot account"] }],
-    [7900, { nombre: "ABC Reglas Firewall", tags: ["firewall rules", "puertos", "abrir puerto", "bloquear ip", "reglas de red", "security group", "alcance"] }],
-    [7903, { nombre: "ABC Squid Proxy", tags: ["proxy", "squid", "whitelist", "blacklist", "acceso internet", "navegacion"] }],
-    [7899, { nombre: "ABC Segmentos IP Routing", tags: ["rutas", "routing", "enrutamiento", "segmento de red", "cidr", "tabla de ruteo"] }],
-    [7889, { nombre: "ABC VPC y/o subnets", tags: ["vpc", "red virtual", "subnet", "subred", "network", "vnet"] }],
-    [7578, { nombre: "ABC Usuarios Generales", tags: ["users", "altas", "bajas", "cuentas", "acceso"] }],
-    [11072, { nombre: "Gestion de Apps Apigee", tags: ["apigee", "api gateway", "proxies", "developer portal", "api management"] }],
-    [3674, { nombre: "ABC certificado SSL", tags: ["ssl", "tls", "certificado", "https", "seguridad web", "renovar certificado"] }],
-    [10365, { nombre: "ABC IAP", tags: ["iap", "identity aware proxy", "acceso remoto", "tunnel", "bastion"] }],
-    [7896, { nombre: "ABC BL", tags: ["load balancer", "balanceador de carga", "lb", "trafico", "alb", "nlb"] }],
+    [13268, { nombre: "IaC Reglas FW", tags: ["firewall", "alcance", "regla", "comunicacion"] }],
+    [13269, { nombre: "IaC Mantto Plantillas", tags: ["modificacion", "infraestructura", "proyecto"] }],
+    [13279, { nombre: "ABC Lineamientos Infraestructura Gobierno Multicloud", tags: ["lineamiento", "creacion infra", "infraestructura"] }],
+    [13278, { nombre: "Auditorias Multicloud", tags: ["auditoria", "revision"] }],
+    [13272, { nombre: "CaC Usuario BD", tags: ["bd", "usuario", "base de datos", "cambio contraseña", "nuevo usuario"] }],
+    [13274, { nombre: "CaC Permisos Usuario BD", tags: ["permisos", "usuario", "bd", "base de datos"] }],
+    [13276, { nombre: "CaC Migración Base de Datos", tags: ["migracion", "bd", "base de datos", "dump"] }],
+    [13275, { nombre: "CaC Base de Datos", tags: ["load balancer", "lb", "certificado"] }],
+    [13273, { nombre: "CaC Permisos Usuario OS", tags: ["IP interna", "IP externa", "IP", "reservar"] }],
+    [13277, { nombre: "CaC Apps Negocio", tags: ["app", "instalar", "instalacion"] }],
+    [13270, { nombre: "CaC Mantto Plantillas", tags: ["api", "instalar", "desinstalar", "modificar"] }],
+    [13267, { nombre: "IaC Permisos Multicloud Console", tags: ["SA", "service account", "permiso", "permisos", "rol", "roles"] }],
+    //Cloud Incident Management
+    [8569, { nombre: "Degradación / Falla de Servicio VDI", tags: ["falla", "VDI"] }]
+    [8568, { nombre: "Degradación / Falla de Servicio Almacenamiento", tags: ["falla", "Almacenamiento"] }]
+    [8567, { nombre: "Degradación / Falla de Servicio Balanceador", tags: ["falla", "balanceador", "lb"] }]
+    [8564, { nombre: "Degradación / Falla de Servicio BD", tags: ["falla", "bd", "base de datos"] }]
+    [8565, { nombre: "Degradación / Falla de Servicio Cluster de Kubernetes", tags: ["falla", "kubernetes", "cluster"] }]
+    [8566, { nombre: "Degradación / Falla de Servicio Comunicaciones", tags: ["falla", "comunicacion", "comunicaciones"] }]
+    [8563, { nombre: "Degradación / Falla de Servicio Servidor", tags: ["falla", "servidor"] }]
     // Active Directory
     [8209, { nombre: "Gestión de Usuarios AD", tags: ["active directory", "ad", "grupos", "permisos", "altas usuarios", "listas de distribucion"] }],
     // Linux Operations

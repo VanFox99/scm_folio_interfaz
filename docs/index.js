@@ -37,13 +37,13 @@ const ofertas = new Map([
     [13270, { nombre: "CaC Mantto Plantillas", tags: ["api", "instalar", "desinstalar", "modificar"] }],
     [13267, { nombre: "IaC Permisos Multicloud Console", tags: ["SA", "service account", "permiso", "permisos", "rol", "roles"] }],
     //Cloud Incident Management
-    [8569, { nombre: "Degradación / Falla de Servicio VDI", tags: ["falla", "VDI"] }]
-    [8568, { nombre: "Degradación / Falla de Servicio Almacenamiento", tags: ["falla", "Almacenamiento"] }]
-    [8567, { nombre: "Degradación / Falla de Servicio Balanceador", tags: ["falla", "balanceador", "lb"] }]
-    [8564, { nombre: "Degradación / Falla de Servicio BD", tags: ["falla", "bd", "base de datos"] }]
-    [8565, { nombre: "Degradación / Falla de Servicio Cluster de Kubernetes", tags: ["falla", "kubernetes", "cluster"] }]
-    [8566, { nombre: "Degradación / Falla de Servicio Comunicaciones", tags: ["falla", "comunicacion", "comunicaciones"] }]
-    [8563, { nombre: "Degradación / Falla de Servicio Servidor", tags: ["falla", "servidor"] }]
+    [8569, { nombre: "Degradación / Falla de Servicio VDI", tags: ["falla", "VDI"] }],
+    [8568, { nombre: "Degradación / Falla de Servicio Almacenamiento", tags: ["falla", "Almacenamiento"] }],
+    [8567, { nombre: "Degradación / Falla de Servicio Balanceador", tags: ["falla", "balanceador", "lb"] }],
+    [8564, { nombre: "Degradación / Falla de Servicio BD", tags: ["falla", "bd", "base de datos"] }],
+    [8565, { nombre: "Degradación / Falla de Servicio Cluster de Kubernetes", tags: ["falla", "kubernetes", "cluster"] }],
+    [8566, { nombre: "Degradación / Falla de Servicio Comunicaciones", tags: ["falla", "comunicacion", "comunicaciones"] }],
+    [8563, { nombre: "Degradación / Falla de Servicio Servidor", tags: ["falla", "servidor"] }],
     // Active Directory
     [8209, { nombre: "Gestión de Usuarios AD", tags: ["active directory", "ad", "grupos", "permisos", "altas usuarios", "listas de distribucion"] }],
     // Linux Operations
@@ -58,7 +58,7 @@ const ofertas = new Map([
     [3399, { nombre: "Reporte de Logs", tags: ["logs", "bitacora", "syslog", "var log", "auditoria logs", "journalctl"] }],
     [3400, { nombre: "Respaldo de File system", tags: ["backup fs", "respaldo archivos", "tar", "rsync", "copia seguridad"] }],
     [3401, { nombre: "Restauración de File system", tags: ["restore fs", "recuperar archivos", "restaurar carpeta", "backup restore"] }],
-    [3385, { nombre: "Respaldos de Base de Datos", tags: ["backup bd onpremise", "respaldo bd onpremise", "respaldo onpremise bd", "bd onpremise"] }]
+    [3385, { nombre: "Respaldos de Base de Datos", tags: ["backup bd onpremise", "respaldo bd onpremise", "respaldo onpremise bd", "bd onpremise"] }],
 ]);
 
 const PLACEHOLDER_TEXT = "Escribe o pega tus notas aquí, en caso de minuta, cada punto es tomado seguido de un 'enter'...";

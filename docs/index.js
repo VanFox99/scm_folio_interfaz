@@ -5,19 +5,38 @@ const protocol = window.location.protocol + '//';
 
 const arrayPaginas = [
     { nombre: "ppm", url: "ppm.softtek.com/" },
-    { nombre: "azure", url: "dev.azure.com/" },
-    { nombre: "azure-portal", url: "portal.azure.com/" },
-    { nombre: "jira", url: "coppelmx.atlassian.net/jira/" },
-    { nombre: "gcp-console", url: "console.cloud.google.com/" },
-    { nombre: "aws-console", url: "d-9067d0f523.awsapps.com/start/#/?tab=accounts/" },
-    { nombre: "git-hub", url: "github.com/enterprises/coppel/" },
     { nombre: "softtek-home", url: "onesofttek.sharepoint.com/sites/home/" },
+    
+    { nombre: "gcp-console", url: "console.cloud.google.com/" },
+    // { nombre: "azure", url: "dev.azure.com/" },
+    // { nombre: "azure-portal", url: "portal.azure.com/" },
+    { nombre: "git-hub", url: "github.com/enterprises/coppel/sso" },
+    { nombre: "jira", url: "coppelmx.atlassian.net/jira/" },
+    // { nombre: "aws-console", url: "d-9067d0f523.awsapps.com/start/#/?tab=accounts/" },
+
+    { nombre: "arq-ti", url: "sites.google.com/coppel.com/daetid/inicio#h.mbxfqs5e06x4" },
+
     { nombre: "dev-guide", url: "sites.google.com/coppel.com/developers/" },
-    { nombre: "arq-integracion", url: "sites.google.com/coppel.com/arq-integracion/" },
-    { nombre: "arq-ti", url: "sites.google.com/coppel.com/daetid" },
     { nombre: "ambientacion-guide", url: "docs.google.com/document/d/1SIyBbmwZJlzyvFkoyQtqtWBWWpt2vs4eu0_oD3U8Kw8/edit?tab=t.0" },
-    { nombre: "gestion-practicas", url: "sites.google.com/coppel.com/smo/pr%C3%A1cticas/" }
+    { nombre: "smo-coppel", url: "sites.google.com/coppel.com/smo/pr%C3%A1cticas/" },
+    { nombre: "tests-ejecucion-resultados", url: "coppelmx.atlassian.net/wiki/spaces/TCoE/" },
+    { nombre: "minsait-info-capacitaciones", url: "coppelmx.atlassian.net/wiki/spaces/PCM/" },
+    { nombre: "gobierno-bancoppel-api-ms", url: "coppelmx.atlassian.net/wiki/spaces/UGAYM/" }
 ];
+
+// Opcion multiple portales
+const multipleURL = {
+    "aws-console": [
+        { label: "Cuenta Afore", sub: "d-9067d0f523", url: "d-9067d0f523.awsapps.com/start/#/?tab=accounts/" },
+        { label: "Cuenta Bancoppel", sub: "d-90679c7977", url: "d-90679c7977.awsapps.com/start/#/?tab=accounts/" },
+        // { label: "Cuenta QA", sub: "d-xxxxxxxxxx", url: "d-xxxxxxxxxx.awsapps.com/start/#/?tab=accounts/" },
+    ],
+    "azure": [
+        { label: "Azure DevOps", url: "dev.azure.com/" },
+        { label: "Azure Portal", url: "portal.azure.com/" },
+        // { label: "Otra organización/tenant", url: "dev.azure.com/OtraOrg" },
+    ]
+};
 
 // Mapa de ofertas con sus nombres y tags asociados
 const ofertas = new Map([
@@ -152,6 +171,18 @@ document.addEventListener('click', (e) => {
 });
 
 function redireccionMenu(nombrePagina) {
+    const multiple = multipleURL[nombrePagina];
+
+    if (multiple && multiple.length > 1) {
+        return;
+    }
+
+    // Si solo tiene 1 cuenta configurada, se abre directo (comportamiento clásico).
+    if (multiple && multiple.length === 1) {
+        window.open(protocol + multiple[0].url, '_blank');
+        return;
+    }
+
     const pagina = arrayPaginas.find(p => p.nombre === nombrePagina);
     if (pagina && pagina.url) {
         window.open(protocol + pagina.url, '_blank');
@@ -159,6 +190,69 @@ function redireccionMenu(nombrePagina) {
         mostrarMensaje("Página no encontrada", false);
     }
 }
+
+function copiarNota() {
+    const notasDiv = document.getElementById('notas');
+    const text = notasDiv.innerText;
+    if (!text || text === PLACEHOLDER_TEXT) {
+        mostrarMensaje("No hay nada que copiar.", false, 3000);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(() => {
+        mostrarMensaje('✓ Nota copiada en portapapeles', true, 3000);
+    }).catch(() => {
+        // Fallback
+        const range = document.createRange();
+        range.selectNodeContents(notasDiv);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        mostrarMensaje('✓ Nota copiada en portapapeles', true, 3000);
+    });
+}
+
+// ===== SUBMENUS DE MULTIPLES URL =====
+function inicializarSubmenus() {
+    document.querySelectorAll('.nav-btn-dropdown').forEach(wrap => {
+        const nombrePagina = wrap.dataset.page;
+        const multiple = multipleURL[nombrePagina];
+        const submenu = wrap.querySelector('.nav-submenu');
+        const mainBtn = wrap.querySelector('.nav-btn');
+
+        if (!multiple || multiple.length < 2 || !submenu) return;
+
+        submenu.innerHTML = '';
+        multiple.forEach(opc => {
+            const item = document.createElement('div');
+            item.className = 'nav-submenu-item';
+            item.innerHTML = `
+                <span class="cuenta-label">${opc.label}</span>`;
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.open(protocol + opc.url, '_blank');
+                wrap.classList.remove('open');
+            });
+            submenu.appendChild(item);
+        });
+
+        mainBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.querySelectorAll('.nav-btn-dropdown.open').forEach(w => {
+                if (w !== wrap) w.classList.remove('open');
+            });
+            wrap.classList.toggle('open');
+        });
+    });
+
+    // Cierra cualquier submenu abierto si se hace clic fuera
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn-dropdown.open').forEach(w => w.classList.remove('open'));
+    });
+}
+
+document.addEventListener('DOMContentLoaded', inicializarSubmenus);
 
 function copiarNota() {
     const notasDiv = document.getElementById('notas');

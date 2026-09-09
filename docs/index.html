@@ -59,7 +59,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            min-height: 56px;
+            min-height: 70px;
         }
 
         .logo-section {
@@ -90,15 +90,48 @@
 
         .header-divider {
             width: 1px;
-            height: 20px;
+            height: 40px;
+            margin: 8px 12px;
             background: var(--border);
             flex-shrink: 0;
+            opacity: 0.5;
+        }
+
+        .nav-categories {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-category {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .nav-category-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: rgba(139, 148, 158, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 3px 7px;
+            white-space: nowrap;
         }
 
         /* ===== NAV GROUPS ===== */
         .header-nav {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 4px;
             flex: 1;
             flex-wrap: wrap;
@@ -109,6 +142,7 @@
             align-items: center;
             gap: 2px;
             padding: 0 4px;
+            flex-wrap: nowrap;
         }
 
         .nav-group + .nav-group {
@@ -123,7 +157,7 @@
             border-radius: var(--radius);
             cursor: pointer;
             font-family: var(--font-sans);
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 500;
             letter-spacing: 0.02em;
             transition: all 0.15s ease;
@@ -1067,6 +1101,81 @@
             background: var(--bg-card);
         }
 
+        /* ===== NAV BTN CON MULTIPLES (submenu al hover) ===== */
+        .nav-btn-dropdown {
+            position: relative;
+        }
+
+        .nav-btn-dropdown > .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-btn-dropdown > .nav-btn::after {
+            content: '▾';
+            font-size: 8px;
+            opacity: 0.6;
+            transform: translateY(1px);
+        }
+
+        .nav-submenu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            min-width: 240px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-active);
+            border-radius: var(--radius);
+            z-index: 300;
+            box-shadow: var(--shadow-lg);
+            padding: 4px;
+        }
+
+        .nav-btn-dropdown:hover .nav-submenu,
+        .nav-btn-dropdown.open .nav-submenu {
+            display: block;
+        }
+
+        .nav-btn-dropdown::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            height: 6px;
+        }
+
+        .nav-submenu-item {
+            padding: 8px 12px;
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: background 0.12s, color 0.12s;
+        }
+
+        .nav-submenu-item:hover {
+            background: rgba(56,139,253,0.12);
+            color: var(--text-primary);
+        }
+
+        .nav-submenu-item .multiple-label {
+            display: block;
+        }
+
+        .nav-submenu-item .multiple-sub {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
         /* ===== AMBIENTE BADGES ===== */
         .amb-badge {
             display: inline-block;
@@ -1096,25 +1205,61 @@
                 <img src="./images/scm_logo.png" alt="SCM" class="logo-image" />
                 <span class="header-title"><span>Folio</span> Interfaz</span>
             </div>
-            <div class="header-divider"></div>
+            
 
             <nav class="header-nav">
-                <div class="nav-group">
-                    <button class="nav-btn primary" onclick="redireccionMenu('ppm')">PPM</button>
-                    <button class="nav-btn primary" onclick="redireccionMenu('softtek-home')">Softtek</button>
-                </div>
-                <div class="nav-group">
-                    <button class="nav-btn" onclick="redireccionMenu('gcp-console')">GCP</button>
-                    <button class="nav-btn" onclick="redireccionMenu('aws-console')">AWS</button>
-                    <button class="nav-btn" onclick="redireccionMenu('azure')">Azure</button>
-                    <button class="nav-btn" onclick="redireccionMenu('git-hub')">GitHub</button>
-                    <button class="nav-btn" onclick="redireccionMenu('jira')">Jira</button>
-                </div>
-                <div class="nav-group">
-                    <button class="nav-btn" onclick="redireccionMenu('dev-guide')">Dev-Guide</button>
-                    <button class="nav-btn" onclick="redireccionMenu('arq-integracion')">Arq. Integración</button>
-                    <button class="nav-btn" onclick="redireccionMenu('ambientacion-guide')">Ambientación</button>
-                    <button class="nav-btn" onclick="redireccionMenu('gestion-practicas')">Gestión Cambio</button>
+                <div class="nav-categories">
+                    <div class="header-divider"></div>
+                    <div class="nav-category">
+                        <span class="nav-category-label">Principal</span>
+                        <div class="nav-group">
+                            <button class="nav-btn primary" onclick="redireccionMenu('ppm')">PPM</button>
+                            <button class="nav-btn primary" onclick="redireccionMenu('softtek-home')">Softtek</button>
+                        </div>
+                    </div>
+                <div class="header-divider"></div>
+                    <div class="nav-category">
+                        <span class="nav-category-label">Plataformas</span>
+                        <div class="nav-group">
+                            <button class="nav-btn" onclick="redireccionMenu('gcp-console')">GCP</button>
+                            <div class="nav-btn-dropdown" data-page="aws-console">
+                                <button class="nav-btn" onclick="redireccionMenu('aws-console')">AWS</button>
+                                <div class="nav-submenu" id="submenu-aws-console"></div>
+                            </div>
+                            <div class="nav-btn-dropdown" data-page="azure">
+                                <button class="nav-btn" onclick="redireccionMenu('azure')">Azure</button>
+                                <div class="nav-submenu" id="submenu-azure"></div>
+                            </div>
+                            <button class="nav-btn" onclick="redireccionMenu('git-hub')">GitHub</button>
+                            <button class="nav-btn" onclick="redireccionMenu('jira')">Jira</button>
+                        </div>
+                    </div>
+                <div class="header-divider"></div>
+                    <div class="nav-category">
+                        <span class="nav-category-label">Documentación General</span>
+                        <div class="nav-group">
+                            <button class="nav-btn" onclick="redireccionMenu('arq-ti')">Arq. TI y Datos</button>
+                        </div>
+                    </div>
+                <div class="header-divider"></div>
+                    <div class="nav-category">
+                        <span class="nav-category-label">Documentación Coppel</span>
+                        <div class="nav-group">
+                            <button class="nav-btn" onclick="redireccionMenu('dev-guide')">Dev-Guide</button>
+                            <button class="nav-btn" onclick="redireccionMenu('ambientacion-guide')">Ambientación</button>
+                            <button class="nav-btn" onclick="redireccionMenu('smo-coppel')">SMO Coppel</button>
+                            <button class="nav-btn" onclick="redireccionMenu('minsait-info-capacitaciones')">Capacitaciones</button>
+                            <button class="nav-btn" onclick="redireccionMenu('tests-ejecucion-resultados')">TCoE</button>
+                        </div>
+                    </div>
+                <div class="header-divider"></div>
+                    <div class="nav-category">
+                        <span class="nav-category-label">Documentación Bancoppel</span>
+                        <div class="nav-group">
+                            <button class="nav-btn" onclick="redireccionMenu('gobierno-bancoppel-api-ms')">Gobierno Bancoppel API & MS</button>
+                        </div>
+                    </div>
+
                 </div>
             </nav>
 
